@@ -1,0 +1,23 @@
+{
+  "name": "osulink-2",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@discordjs/rest": "^0.1.0-canary.0",
+    "discord-akairo": "^8.1.0",
+    "discord-api-types": "^0.22.0",
+    "discord.js": "^13.1.0",
+    "download": "^8.0.0",
+    "firebase": "^8.3.1",
+    "node-osu": "^2.2.1",
+    "ojsama": "^2.2.0",
+    "request": "^2.88.2",
+    "request-promise": "^4.2.6"
+  }
+}
