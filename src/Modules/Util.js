@@ -17,7 +17,7 @@ Util.msToHours = (ms) => {
     ms = ms / 1000
     const hours = Math.floor(ms / 3600);
 
-    return Util.addCommas(hours.toString());
+    return Util.addCommas(hours);
 }
 
 Util.formatTimeMinutesSeconds = (seconds) => {
@@ -28,7 +28,7 @@ Util.formatTimeMinutesSeconds = (seconds) => {
 }
 
 Util.addCommas = (number) => {
-    return number.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 }
 
 module.exports = Util;
