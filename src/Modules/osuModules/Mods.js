@@ -1,5 +1,4 @@
 const modbits = { nomod: 0, nf: 1 << 0, ez: 1 << 1, td: 1 << 2, hd: 1 << 3, hr: 1 << 4, dt: 1 << 6, ht: 1 << 8, nc: 1 << 9, fl: 1 << 10, so: 1 << 12 };
-
 class Mods {
     /**
     * Creates a new Mods object
@@ -42,7 +41,7 @@ class Mods {
             }
         }
 
-        this.speedMultiplier = (this.has('DT') || this.has('NC')) ? 1.5 : (this.has('HT') ? 0.75 : 1);
+        this.speedMultiplier = (this.has(modbits.dt) || this.has(modbits.nc)) ? 1.5 : (this.has(modbits.ht) ? 0.75 : 1);
     }
 
     /**
@@ -51,8 +50,8 @@ class Mods {
      * @returns {Number}
      */
     calculateOD(od) {
-        if (this.has('HR')) od *= 1.4;
-        if (this.has('EZ')) od *= 0.5;
+        if (this.has(modbits.hr)) od *= 1.4;
+        if (this.has(modbits.ht)) od *= 0.5;
 
         od = (Math.floor(od * 100) / 100);
         return Math.min(Math.max(od, 0), 10);
@@ -64,8 +63,8 @@ class Mods {
      * @returns {Number}
      */
     calculateHP(hp) {
-        if (this.has('HR')) hp *= 1.4;
-        if (this.has('EZ')) hp *= 0.5;
+        if (this.has(modbits.hr)) hp *= 1.4;
+        if (this.has(modbits.ht)) hp *= 0.5;
 
         hp = (Math.floor(hp * 100) / 100);
         return Math.min(Math.max(hp, 0), 10);
@@ -77,8 +76,8 @@ class Mods {
      * @returns {Number}
      */
     calculateCS(cs) {
-        if (this.has('HR')) cs *= 1.3;
-        if (this.has('EZ')) cs *= 0.5;
+        if (this.has(modbits.hr)) cs *= 1.3;
+        if (this.has(modbits.ht)) cs *= 0.5;
 
         cs = (Math.floor(cs * 100) / 100);
         return Math.min(Math.max(cs, 0), 10);
@@ -90,12 +89,12 @@ class Mods {
      * @returns {Number}
      */
     calculateAR(ar) {
-        if (this.has('HR')) ar *= 1.4;
-        if (this.has('EZ')) ar *= 0.5;
-        if (this.has('DT')) ar = ((ar * 2) + 13) / 3;
+        if (this.has(modbits.hr)) ar *= 1.4;
+        if (this.has(modbits.ht)) ar *= 0.5;
+        if (this.has(modbits.dt)) ar = ((ar * 2) + 13) / 3;
 
         ar = (Math.floor(ar * 100) / 100);
-        return Math.min(Math.max(ar, 0), (this.has('DT') ? 11 : 10));
+        return Math.min(Math.max(ar, 0), (this.has(modbits.dt) ? 11 : 10));
     }
 
     /**
@@ -128,11 +127,13 @@ class Mods {
      * @returns {String} readable
      */
     _modbitsToString(mods) {
-        var res = '';
+        let res = '';
         mods = parseInt(mods);
-        for (var property in modbits) {
+        for (const property in modbits) {
+            console.log(property)
             if (property.length != 2) continue;
             if (!modbits.hasOwnProperty(property)) continue;
+            console.log(modbits[property])
             if (mods & modbits[property]) res += property.toUpperCase();
         }
         if (res.indexOf('DT') >= 0 && res.indexOf('NC') >= 0) res = res.replace('DT', '');
@@ -140,8 +141,10 @@ class Mods {
     }
 
     has(mod) {
-        const check1 = modbits.hasOwnProperty(mod);
+        const check1 = (this.modbits & mod);
         const check2 = this.string.indexOf(mod) >= 0;
+
+        console.log(this.string, mod, check1, check2)
 
         return (check1 || check2);
     }
