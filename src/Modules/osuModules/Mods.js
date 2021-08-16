@@ -130,10 +130,8 @@ class Mods {
         let res = '';
         mods = parseInt(mods);
         for (const property in modbits) {
-            console.log(property)
             if (property.length != 2) continue;
             if (!modbits.hasOwnProperty(property)) continue;
-            console.log(modbits[property])
             if (mods & modbits[property]) res += property.toUpperCase();
         }
         if (res.indexOf('DT') >= 0 && res.indexOf('NC') >= 0) res = res.replace('DT', '');
