@@ -7,7 +7,7 @@ const { osu } = require('../Modules/osu');
 const { REST } = require('@discordjs/rest');
 const { Firebase } = require('./Modules/Datastore')
 
-const Settings = require('../settings.json');
+const Settings = require('../settings.js');
 
 class Client extends AkairoClient {
   constructor() {
