@@ -51,7 +51,7 @@ class MapCommand extends Command {
                 `${Emojis[beatmap.getDifficulty({ mods: mods })]} __**${beatmap.version}**__ ${mods != '' ? `**${mods}**` : ''} [${beatmap.stars({ mods: mods })}★] \n` +
                 `• **AR:** ${mods.calculateAR(beatmap.diff_approach)} • **OD:** ${mods.calculateOD(beatmap.diff_overall)} ` +
                 `• **HP:** ${mods.calculateHP(beatmap.diff_drain)} • **CS:** ${mods.calculateCS(beatmap.diff_size)}\n` +
-                `• **Length:** ${Util.formatTimeMinutesSeconds(beatmap.total_length / mods.speedMultiplier)} • **Max Combo:** ${beatmap.max_combo}x`
+                `• **Length:** ${Util.formatTimeMinutesSeconds((beatmap.total_length / mods.speedMultiplier) * 1000)} • **Max Combo:** ${beatmap.max_combo}x`
             )
             .setFooter(`95%▸${beatmap.calculatePP({ mods: mods, accuracy: 95 })}pp • 98%▸${beatmap.calculatePP({ mods: mods, accuracy: 98 })}pp • 100%▸${beatmap.calculatePP({ mods: mods })}pp`)
 
