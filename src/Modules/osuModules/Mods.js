@@ -142,8 +142,6 @@ class Mods {
         const check1 = (this.modbits & mod);
         const check2 = this.string.indexOf(mod) >= 0;
 
-        console.log(this.string, mod, check1, check2)
-
         return (check1 || check2);
     }
 
