@@ -20,11 +20,11 @@ Util.msToHours = (ms) => {
     return Util.addCommas(hours);
 }
 
-Util.formatTimeMinutesSeconds = (seconds) => {
+Util.formatTimeMinutesSeconds = (ms) => {
     const format = val => `0${Math.floor(val)}`.slice(-2)
-    const minutes = (seconds % 3600) / 60
+    const minutes = ((ms / 1000) % 3600) / 60
 
-    return [minutes, seconds % 60].map(format).join(':')
+    return [minutes, (ms / 1000) % 60].map(format).join(':')
 }
 
 Util.addCommas = (number) => {
