@@ -17,11 +17,11 @@ class ProfileCommand extends Command {
                 type: 'SUB_COMMAND',
                 options: [{
                     name: 'user',
-                    description: 'The discord user of the player you want to view.',
+                    description: 'The discord user of the player.',
                     type: 'USER'
                 }, {
                     name: 'name',
-                    description: 'The name of the player you want to view.',
+                    description: 'The name of the player.',
                     type: 'STRING'
                 }]
             }],
