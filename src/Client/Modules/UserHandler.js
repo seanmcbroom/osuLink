@@ -95,6 +95,23 @@ class User {
             DataFormat: DataFormat,
             id: this.id
         });
+
+        this.watcher = {
+            update: () => {
+                //console.log('Update')
+
+                this.watcher.nextUpdate = Date.now() + ((1) * 60 * 60 * 1000);
+                this.watcher.lastUpdate = Date.now();
+                this.watcher.start();
+            },
+            start: () => {
+                clearTimeout(this.watcher.timer);
+                this.watcher.timer = setTimeout(this.watcher.update, (this.watcher.nextUpdate - Date.now()));
+            },
+            nextUpdate: Date.now(),
+            lastUpdate: Date.now()
+        }
+        this.watcher.start()
     }
 }
 
