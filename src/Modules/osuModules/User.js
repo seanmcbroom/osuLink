@@ -33,9 +33,8 @@ class User {
         return new Promise((resolve) => {
             this.osu.api.apiCall('/get_user_recent', { m: 0, limit: 1, u: this.user_id, type: 'id' })
                 .then(async recentPlaysData => {
-                    if (!recentPlaysData) {
-                        resolve(null);
-                        return
+                    if (recentPlaysData.length <= 0) {
+                        return resolve(null);
                     }
 
                     const mostRecentPlayData = recentPlaysData[0];
