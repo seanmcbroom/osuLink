@@ -30,12 +30,15 @@ class User {
      * @returns {Promise<Play>} Most recent play
      */
     async getRecent() {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve) => {
             this.osu.api.apiCall('/get_user_recent', { m: 0, limit: 1, u: this.user_id, type: 'id' })
                 .then(async recentPlaysData => {
-                    const mostRecentPlayData = recentPlaysData[0];
+                    if (!recentPlaysData) {
+                        resolve(null);
+                        return
+                    }
 
-                    if (!mostRecentPlayData) resolve('No recent plays found.');
+                    const mostRecentPlayData = recentPlaysData[0];
 
                     const beatmap = await this.osu.getBeatmap({
                         id: mostRecentPlayData.beatmap_id
