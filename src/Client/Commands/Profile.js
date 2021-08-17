@@ -47,7 +47,7 @@ class ProfileCommand extends Command {
         if (!osuUser) return interaction.reply('Unabled to find osu account. Try again later.')
 
         const Embed = new Discord.MessageEmbed()
-            .setColor(this.client.mainColor)
+            .setColor(this.client.Settings.Colors.Main)
             .setAuthor(`osu!Stats (${osuUser.username})`, osuUser.avatar, osuUser.profile_link)
             .setThumbnail(osuUser.avatar)
             .setDescription(

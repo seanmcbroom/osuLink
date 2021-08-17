@@ -33,7 +33,7 @@ class LinkCommand extends Command {
         if (osuUser.user_id == currentUserId) return interaction.reply('Your account is already linked.')
 
         let helpEmbed = new Discord.MessageEmbed()
-            .setColor(this.client.mainColor)
+            .setColor(this.client.Settings.Colors.Main)
             .setAuthor('osuLink Help', this.client.user.avatarURL())
 
         const discordTag = await osuUser.getDiscordTag();

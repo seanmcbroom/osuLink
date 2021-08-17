@@ -20,14 +20,14 @@ class InfoCommand extends Command {
         })).reduce((p, n) => p + n, 0);
 
         const Embed = new Discord.MessageEmbed()
-            .setColor(this.client.mainColor)
+            .setColor(this.client.Settings.Colors.Main)
             .setThumbnail(this.client.user.avatarURL())
             .setAuthor(`osuLink Information`)
             .setDescription(
                 `**Total Servers:** ${Util.addCommas(totalGuilds)} • **Total Members:** ${Util.addCommas(totalMembers)}\n` +
                 `**Shard:** #${Util.addCommas(interaction.guild.shardId + 1)} of ${Util.addCommas(this.client.shard.count)} • **Shard Servers:** ${Util.addCommas(this.client.guilds.cache.size)}\n\n` +
 
-                `**Links** › **[Support Server](https://discord.gg/K2dTCmJ)**, **[Invite](https://discord.com/api/oauth2/authorize?client_id=767176248811847691&permissions=2550262800&scope=bot%20applications.commands)**`
+                `**Links** › **[Support Server](${this.client.Settings.Links.SupportServer})**, **[Invite](${this.client.Settings.Links.Invite})**`
             )
             .setFooter(`Performance Point calculation is sourced from ojsama.`)
 

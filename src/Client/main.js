@@ -54,7 +54,7 @@ class Client extends AkairoClient {
     this.inhibitorHandler.loadAll();
     this.listenerHandler.loadAll();
 
-    this.mainColor = '#9bc8fa';
+    this.Settings = Settings;
 
     this.once('ready', this.setup);
   }

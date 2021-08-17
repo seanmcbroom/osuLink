@@ -51,7 +51,7 @@ class RecentCommand extends Command {
         if (!recentPlay) return interaction.reply('No recent plays found.')
 
         const Embed = new Discord.MessageEmbed()
-            .setColor(this.client.mainColor)
+            .setColor(this.client.Settings.Colors.Main)
             .setAuthor(`${recentPlay.beatmap.title} by ${recentPlay.beatmap.creator}`, osuUser.avatar, recentPlay.beatmap.link)
             .setThumbnail(recentPlay.beatmap.cover_thumbnail)
             .setDescription(

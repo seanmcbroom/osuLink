@@ -1,18 +1,23 @@
 const Settings = {
     Owners: [517529173061795840, 866759411267141682],
 
+    Links: {
+        Invite: 'https://discord.com/api/oauth2/authorize?client_id=767176248811847691&permissions=2550262800&scope=bot%20applications.commands',
+        SupportServer: 'https://discord.gg/K2dTCmJ',
+        TopGG: 'https://top.gg/bot/767176248811847691'
+    },
+
+    Colors: {
+        Main: '#9bc8fa'
+    },
+
     DataFormats: {
         User: {
-            Language: "EN",
             osuID: null
         },
 
         Guild: {
-            NicknameEnabled: false,
-            NicknameFormat: "${USERNAME}",
-            VerifiedRole: null,
-            RoleBinds: {},
-            Prefix: "osu!"
+
         }
     },
 

@@ -44,7 +44,7 @@ class MapCommand extends Command {
         });
 
         let Embed = new Discord.MessageEmbed()
-            .setColor(this.client.mainColor)
+            .setColor(this.client.Settings.Colors.Main)
             .setAuthor(`${beatmap.title} by ${beatmap.creator}`, `http://s.ppy.sh/a/${beatmap.creator_id}`, beatmap.link)
             .setThumbnail(beatmap.cover_thumbnail)
             .setDescription(
