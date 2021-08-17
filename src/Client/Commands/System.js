@@ -17,7 +17,7 @@ class PingCommand extends Command {
         const memoryInfo = await os.mem.info();
 
         const Embed = new Discord.MessageEmbed()
-            .setColor(this.client.mainColor)
+            .setColor(this.client.Settings.Colors.Main)
             .setThumbnail(this.client.user.avatarURL())
             .setAuthor(`System Information`)
             .setDescription(
