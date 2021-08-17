@@ -13,18 +13,13 @@ class RecentCommand extends Command {
             cooldown: 10000,
 
             slashCommandOptions: [{
-                name: 'player',
-                description: 'The player you want to view.',
-                type: 'SUB_COMMAND',
-                options: [{
-                    name: 'user',
-                    description: 'The discord user of the player.',
-                    type: 'USER'
-                }, {
-                    name: 'name',
-                    description: 'The name of the player.',
-                    type: 'STRING'
-                }]
+                name: 'user',
+                description: 'The discord user of the player.',
+                type: 'USER'
+            }, {
+                name: 'name',
+                description: 'The name of the player.',
+                type: 'STRING'
             }],
 
             contextMenu: {

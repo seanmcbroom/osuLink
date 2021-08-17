@@ -246,7 +246,9 @@ class InteractionHandler {
 				{ body: this.Interactions.Structure }
 			);
 		} catch (error) {
-			// console.error(error);
+			if (error.code != 50001) { // Missing Access error
+				console.log(error);
+			}
 		}
 	}
 
