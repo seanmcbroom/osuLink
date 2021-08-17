@@ -18,13 +18,14 @@ class PingCommand extends Command {
 
         const Embed = new Discord.MessageEmbed()
             .setColor(this.client.mainColor)
-            .setAuthor(`System Information`)
             .setThumbnail(this.client.user.avatarURL())
+            .setAuthor(`System Information`)
             .setDescription(
                 `**Uptime:** ${Util.msToHumanReadable(this.client.uptime)}\n` +
                 `**Memory:** ${memoryInfo.usedMemPercentage}% • **CPU:** ${cpuUsage}%\n` +
                 `**Ping:** ${Util.addCommas(ping)}ms`
             )
+            .setTimestamp()
 
         return interaction.reply({ embeds: [Embed] });
     }
