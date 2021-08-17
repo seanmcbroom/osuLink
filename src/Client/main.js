@@ -14,7 +14,7 @@ class Client extends AkairoClient {
     super({
       ownerID: Settings.Owners,
     }, {
-      intents: 525
+      intents: 3
     });
 
     this.interactionHandler = new InteractionHandler(this, {
