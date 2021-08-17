@@ -1,8 +1,6 @@
 const { Inhibitor } = require('discord-akairo');
 
-const blacklist = [
-  '302818411547983884'
-];
+const blacklist = [];
 
 class BlacklistInhibitor extends Inhibitor {
   constructor() {
