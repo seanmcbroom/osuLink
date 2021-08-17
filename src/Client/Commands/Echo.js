@@ -3,7 +3,6 @@ const { Command } = require('discord-akairo');
 class EchoCommand extends Command {
     constructor() {
         super('echo', {
-            aliases: [],
             description: 'Make the bot say something.',
             // userPermissions: 1074266248n,
             // clientPermissions: 1074266248n,

@@ -3,10 +3,7 @@ const { Command } = require('discord-akairo');
 class InviteCommand extends Command {
     constructor() {
         super('invite', {
-            aliases: [],
             description: 'Add the bot to another server.',
-            rateLimit: 1,
-            cooldown: 5000
         });
     }
 
