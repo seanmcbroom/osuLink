@@ -92,7 +92,7 @@ class osu {
                 }
             }
 
-            if (!beatmapData) resolve(null);
+            if (!beatmapData) return resolve(null);
             this.cache.beatmapData.set(id, beatmapData);
 
             if (!beatmapFileString) {
@@ -105,20 +105,8 @@ class osu {
                 }
             }
 
-            if (!beatmapFileString) resolve(null);
+            if (!beatmapFileString) return resolve(null);
             this.cache.beatmap.set(id, beatmapFileString);
-
-            const isBeatmapFinished = (parseInt(beatmapData.approved) > 0);
-
-            if (!isBeatmapFinished || !this.beatmapsDirectory) { // Delete beatmap
-                if (await fs.existsSync(`${this.beatmapsDirectory}/${id}.json`)) {
-                    await fs.unlinkSync(`${this.beatmapsDirectory}/${id}.json`);
-                }
-
-                if (await fs.existsSync(`${this.beatmapsDirectory}/${id}.osu`)) {
-                    await fs.unlinkSync(`${this.beatmapsDirectory}/${id}.osu`);
-                }
-            }
 
             const beatmap = new Beatmap({
                 beatmapData: beatmapData || null,
@@ -142,9 +130,15 @@ class osu {
     }
 
     async _downloadBeatmap(id) {
-        await download(`https://osu.ppy.sh/osu/${id}`, this.beatmapsDirectory, { filename: id + '.osu' });
+        const directory = this.beatmapsDirectory || "./"
 
-        const beatmapFileString = (await fs.readFileSync(`${this.beatmapsDirectory}/${id}.osu`)).toString();
+        await download(`https://osu.ppy.sh/osu/${id}`, directory, { filename: id + '.osu' });
+        const beatmapFileString = (await fs.readFileSync(`${directory}/${id}.osu`)).toString();
+
+        const isBeatmapFinished = (parseInt(beatmapData.approved) > 0);
+        if (!isBeatmapFinished || !this.beatmapsDirectory) {
+            await fs.unlinkSync(`${directory}/${id}.osu`);
+        }
 
         return beatmapFileString
     }
@@ -152,7 +146,10 @@ class osu {
     async _downloadBeatmapData(id) {
         const beatmapData = await this.api.apiCall('/get_beatmaps', { b: id }).then((m) => { return m[0] });
 
-        await fs.writeFileSync(`${this.beatmapsDirectory}/${id}.json`, JSON.stringify(beatmapData, null, 3));
+        const isBeatmapFinished = (parseInt(beatmapData.approved) > 0);
+        if (isBeatmapFinished && this.beatmapsDirectory) {
+            await fs.writeFileSync(`${this.beatmapsDirectory}/${id}.json`, JSON.stringify(beatmapData, null, 3));
+        }
 
         return beatmapData
     }
