@@ -1,21 +1,21 @@
 const Mods = require('./Mods');
 
-class Play {
+class Score {
     /**
      * Creates a new Beatmap object
      * @param {Object} [osu] The main osu module
      * @param {Object} [options={}]
-     * @param {Object} [options.playData]
+     * @param {Object} [options.scoreData]
      * @param {Object} [options.beatmap]
      */
     constructor(options) {
         const {
-            playData = null,
+            scoreData = null,
             beatmap = null
         } = options;
 
-        for (const x in playData) {
-            this[x] = playData[x];
+        for (const x in scoreData) {
+            this[x] = scoreData[x];
         };
 
         this.mods = new Mods({
@@ -40,7 +40,7 @@ class Play {
     }
 
     /**
-     * Calculates star rating of play
+     * Calculates star rating of score
      * @returns {Number}
      */
     getDifficulty() {
@@ -50,7 +50,7 @@ class Play {
     }
 
     /**
-     * Calculates star rating of play
+     * Calculates star rating of score
      * @returns {Number}
      */
     starRating() {
@@ -60,7 +60,7 @@ class Play {
     }
 
     /**
-     * Calculate pp of play
+     * Calculate pp of score
      * @returns {Number}
      */
     pp() {
@@ -75,7 +75,7 @@ class Play {
     }
 
     /**
-    * Calculate pp of play (if full combo)
+    * Calculate pp of score (if full combo)
     * @returns {Number}
     */
     fcpp() {
@@ -88,4 +88,4 @@ class Play {
     }
 }
 
-module.exports = Play;
+module.exports = Score;
