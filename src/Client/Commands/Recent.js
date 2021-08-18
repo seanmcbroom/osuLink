@@ -9,7 +9,7 @@ class RecentCommand extends Command {
         super('recent', {
             description: 'View most recent play.',
 
-            ratelimit: 2,
+            ratelimit: 1,
             cooldown: 10000,
 
             slashCommandOptions: [{
