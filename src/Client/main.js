@@ -18,15 +18,15 @@ class Client extends AkairoClient {
     });
 
     this.interactionHandler = new InteractionHandler(this, {
-      directory: './Client/Commands',
+      directory: './src/Client/Commands',
     })
 
     this.inhibitorHandler = new InhibitorHandler(this, {
-      directory: './Client/Inhibitors',
+      directory: './src/Client/Inhibitors',
     });
 
     this.listenerHandler = new ListenerHandler(this, {
-      directory: './Client/Listeners',
+      directory: './src/Client/Listeners',
     });
 
     this.guildHandler = new GuildHandler(this, {
@@ -45,7 +45,7 @@ class Client extends AkairoClient {
 
     this.osu = new osu({
       apiKey: Settings.osuApiKey,
-      beatmapsDirectory: './Components/beatmaps'
+      beatmapsDirectory: './src/Components/beatmaps'
     })
 
     this.interactionHandler.useInhibitorHandler(this.inhibitorHandler);

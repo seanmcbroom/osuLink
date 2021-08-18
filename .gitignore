@@ -1,4 +1,4 @@
 /node_modules
 /src/Components/beatmaps/*
-/src/.env
+.env
 .vscode
