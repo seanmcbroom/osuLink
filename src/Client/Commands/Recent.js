@@ -14,12 +14,26 @@ class RecentCommand extends Command {
 
             slashCommandOptions: [{
                 name: 'user',
-                description: 'The discord user of the player.',
+                description: 'Discord user of the player.',
                 type: 'USER'
             }, {
                 name: 'name',
-                description: 'The name of the player.',
+                description: 'Name of the player.',
                 type: 'STRING'
+            }, {
+                name: 'filter',
+                description: 'The method which recent plays will be filtered.',
+                type: 'STRING',
+                choices: [{
+                    name: "best",
+                    value: "best"
+                }, {
+                    name: "worst",
+                    value: "worst"
+                }, {
+                    name: "random",
+                    value: "random"
+                }],
             }],
 
             contextMenu: {
@@ -42,7 +56,7 @@ class RecentCommand extends Command {
         const osuUser = await this.client.osu.getUser({ identifier: osuID, idetifierType: 'id' });
         if (!osuUser) return interaction.reply('Unabled to find osu account. Try again later.')
 
-        const recentPlay = await osuUser.getRecent();
+        const recentPlay = await osuUser.getRecent({ filter: interaction.options.getString('filter') || 'recent' });
         if (!recentPlay) return interaction.reply('No recent plays found.')
 
         const Embed = new Discord.MessageEmbed()

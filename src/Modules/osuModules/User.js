@@ -1,5 +1,5 @@
 const request = require('request-promise');
-const Play = require('./Play');
+const Score = require('./Score');
 
 class User {
     /**
@@ -26,29 +26,69 @@ class User {
     }
 
     /**
-     * Gets users most recent play
-     * @returns {Promise<Play>} Most recent play
+     * Gets users most recent score
+     * @param {Object} [options={}]
+     * @param {String} [options.filter] The method which recent scores will be filtered.
+     * @returns {Promise<Score>} Most recent score
      */
-    async getRecent() {
-        return new Promise((resolve) => {
-            this.osu.api.apiCall('/get_user_recent', { m: 0, limit: 1, u: this.user_id, type: 'id' })
-                .then(async recentPlaysData => {
-                    if (recentPlaysData.length <= 0) {
-                        return resolve(null);
+    async getRecent(options = {}) {
+        const {
+            filter = 'recent'
+        } = options;
+
+        const filters = {
+            'recent': async (recentScores) => { return recentScores[0] },
+            'best': async (recentScores) => {
+                let highest = null;
+                let highestpp = 0;
+
+                for (const score of recentScores) {
+                    const beatmap = await this.osu.getBeatmap({ id: score.beatmap_id });
+                    const play = new Score({ scoreData: score, beatmap: beatmap });
+                    const pp = play.pp();
+
+                    if (pp > highestpp) {
+                        highest = score;
+                        highestpp = pp;
                     }
+                }
 
-                    const mostRecentPlayData = recentPlaysData[0];
+                return highest;
+            },
+            'worst': async (recentScores) => {
+                let worst = null;
+                let worstpp = 10000;
 
-                    const beatmap = await this.osu.getBeatmap({
-                        id: mostRecentPlayData.beatmap_id
-                    });
+                for (const score of recentScores) {
+                    const beatmap = await this.osu.getBeatmap({ id: score.beatmap_id });
+                    const play = new Score({ scoreData: score, beatmap: beatmap });
+                    const pp = play.pp();
 
-                    const play = new Play({
-                        playData: mostRecentPlayData,
-                        beatmap: beatmap
-                    });
+                    console.log(pp);
 
-                    resolve(play);
+                    if (pp < worstpp) {
+                        worst = score;
+                        worstpp = pp;
+                    }
+                }
+
+                return worst;
+            },
+            'random': async (recentScores) => {
+                return recentScores[Math.round(Math.random() * recentScores.length)]
+            },
+        }
+
+        return new Promise((resolve) => {
+            this.osu.api.apiCall('/get_user_recent', { m: 0, limit: 50, u: this.user_id, type: 'id' })
+                .then(async recentScores => {
+                    if (recentScores.length <= 0) return resolve(null);
+
+                    const filteredScore = await filters[filter](recentScores);
+                    const beatmap = await this.osu.getBeatmap({ id: filteredScore.beatmap_id });
+                    const score = new Score({ scoreData: filteredScore, beatmap: beatmap });
+
+                    resolve(score);
                 })
         })
     }
@@ -56,17 +96,13 @@ class User {
     async getDiscordTag() {
         if (this.discord_tag) return this.discord_tag
 
-        await this._webscrape()
-
-        return this.discord_tag;
+        return await this._webscrape().discord_tag;
     }
 
     async getHighestPP() {
         if (this.top_pp) return this.top_pp
 
-        await this._webscrape()
-
-        return this.top_pp;
+        return await this._webscrape().top_pp;
     }
 
     async _webscrape() {
