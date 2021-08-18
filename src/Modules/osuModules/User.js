@@ -80,7 +80,7 @@ class User {
         }
 
         return new Promise((resolve) => {
-            this.osu.api.apiCall('/get_user_recent', { m: 0, limit: 50, u: this.user_id, type: 'id' })
+            this.osu.api.apiCall('/get_user_recent', { m: 0, limit: 20, u: this.user_id, type: 'id' })
                 .then(async recentScores => {
                     if (recentScores.length <= 0) return resolve(null);
 
