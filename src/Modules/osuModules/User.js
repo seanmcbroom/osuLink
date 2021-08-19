@@ -27,6 +27,32 @@ class User {
 
     /**
      * Gets users most recent score
+     * @returns {Promise<Score[]>} Most recent score
+     */
+    async getScores(options = {}) {
+        const {
+            beatmapId = 0
+        } = options;
+
+        return new Promise((resolve) => {
+            this.osu.api.apiCall('/get_scores', { b: beatmapId, u: this.user_id, type: 'id', m: 0 })
+                .then(async scores => {
+                    if (scores.length <= 0) return resolve(null);
+
+                    const beatmap = await this.osu.getBeatmap({ id: beatmapId });
+
+                    let Scores = new Array();;
+                    for (const score of scores) {
+                        Scores.push(new Score({ scoreData: score, beatmap: beatmap }));
+                    }
+
+                    return resolve(Scores);
+                })
+        })
+    }
+
+    /**
+     * Gets users most recent score
      * @param {Object} [options={}]
      * @param {String} [options.filter] The method which recent scores will be filtered.
      * @returns {Promise<Score>} Most recent score
@@ -75,7 +101,7 @@ class User {
                 return worst;
             },
             'random': async (recentScores) => {
-                return recentScores[Math.round(Math.random() * recentScores.length)]
+                return recentScores[Math.round(Math.random() * recentScores.length) - 1]
             },
         }
 
@@ -88,7 +114,7 @@ class User {
                     const beatmap = await this.osu.getBeatmap({ id: filteredScore.beatmap_id });
                     const score = new Score({ scoreData: filteredScore, beatmap: beatmap });
 
-                    resolve(score);
+                    return resolve(score);
                 })
         })
     }
