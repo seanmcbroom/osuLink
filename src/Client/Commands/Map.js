@@ -25,23 +25,16 @@ class MapCommand extends Command {
 
     async exec(interaction) {
         const link = interaction.options.getString('link') || this.client.guildHandler.Get(interaction.guild.id).mostRecentBeatmap;
-
         if (!link) return interaction.reply('No beatmap found.');
 
         const match = link.match(/(\d+)/g);
         const beatmapId = match ? match[match.length - 1] : null;
-
         if (!beatmapId) return interaction.reply('No beatmap found.');
 
-        const beatmap = await this.client.osu.getBeatmap({
-            id: beatmapId
-        })
-
+        const beatmap = await this.client.osu.getBeatmap({ id: beatmapId })
         if (!beatmap) return interaction.reply('No beatmap found.');
 
-        const mods = this.client.osu.getMods({
-            identifier: interaction.options.getString('mods') || 'NM'
-        });
+        const mods = this.client.osu.getMods({ identifier: interaction.options.getString('mods') || 'NM' });
 
         let Embed = new Discord.MessageEmbed()
             .setColor(this.client.Settings.Colors.Main)
