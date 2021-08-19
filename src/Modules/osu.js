@@ -28,6 +28,11 @@ class osu {
             beatmap: new Map(),
             beatmapData: new Map(),
         }
+
+        setInterval(() => {
+            this.cache.beatmap.clear()
+            this.cache.beatmapData.clear()
+        }, (3) * 60 * 60 * 1000)
     }
 
     /**
@@ -53,17 +58,17 @@ class osu {
 
         return new Promise(async (resolve) => {
             const userData = await this.api.apiCall('/get_user', { u: identifier, type: identifierType }).then((u) => {
-                if (!u || u == []) resolve(null);
+                if (!u || u == []) return resolve(null);
                 return u[0]
             });
 
-            if (!userData) resolve(null);
+            if (!userData) return resolve(null);
 
             const user = new User(this, {
                 userData: userData,
             });
 
-            resolve(user);
+            return resolve(user);
         });
     }
 
@@ -88,11 +93,11 @@ class osu {
                 if (!isBeatmapDataDownloaded) {
                     beatmapData = await this._downloadBeatmapData(id);
                 } else {
-                    beatmapData = require(`${this.beatmapsDirectory}/${id}.json`);
+                    beatmapData = await fs.readFileSync(`${this.beatmapsDirectory}/${id}.json`)
                 }
             }
 
-            if (!beatmapData) resolve(null);
+            if (!beatmapData || beatmapData == undefined) return resolve(null);
             this.cache.beatmapData.set(id, beatmapData);
 
             if (!beatmapFileString) {
@@ -105,7 +110,7 @@ class osu {
                 }
             }
 
-            if (!beatmapFileString) resolve(null);
+            if (!beatmapFileString || beatmapData == undefined) return resolve(null);
             this.cache.beatmap.set(id, beatmapFileString);
 
             const isBeatmapFinished = (parseInt(beatmapData.approved) > 0);
@@ -125,7 +130,7 @@ class osu {
                 beatmapFileString: beatmapFileString,
             });
 
-            resolve(beatmap);
+            return resolve(beatmap);
         })
     }
 
