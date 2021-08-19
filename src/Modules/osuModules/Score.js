@@ -15,7 +15,9 @@ class Score {
         } = options;
 
         for (const x in scoreData) {
-            this[x] = scoreData[x];
+            if (x != 'pp') {
+                this[x] = scoreData[x];
+            }
         };
 
         this.mods = new Mods({
