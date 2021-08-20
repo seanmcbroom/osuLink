@@ -7,6 +7,8 @@ const Emojis = require('../../Modules/Emojis')
 class ProfileCommand extends Command {
     constructor() {
         super('profile', {
+            aliases: ['stats'],
+
             description: 'View profile of player.',
             ratelimit: 2,
             cooldown: 10000,
