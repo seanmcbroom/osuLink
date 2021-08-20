@@ -87,20 +87,20 @@ class osu {
             let beatmapData = this.cache.beatmapData.get(id);
             let beatmapFileString = this.cache.beatmap.get(id);
 
-            if (!beatmapData) {
+            if (beatmapData == undefined) {
                 const isBeatmapDataDownloaded = await fs.existsSync(`${this.beatmapsDirectory}/${id}.json`);
 
                 if (!isBeatmapDataDownloaded) {
                     beatmapData = await this._downloadBeatmapData(id);
                 } else {
-                    beatmapData = await fs.readFileSync(`${this.beatmapsDirectory}/${id}.json`)
+                    beatmapData = JSON.parse(await fs.readFileSync(`${this.beatmapsDirectory}/${id}.json`));
                 }
             }
 
-            if (!beatmapData || beatmapData == undefined) return resolve(null);
+            if (beatmapData == undefined) return resolve(null);
             this.cache.beatmapData.set(id, beatmapData);
 
-            if (!beatmapFileString) {
+            if (beatmapFileString == undefined) {
                 const isBeatmapDownloaded = await fs.existsSync(`${this.beatmapsDirectory}/${id}.osu`);
 
                 if (!isBeatmapDownloaded) {
@@ -110,12 +110,12 @@ class osu {
                 }
             }
 
-            if (!beatmapFileString || beatmapData == undefined) return resolve(null);
+            if (beatmapData == undefined) return resolve(null);
             this.cache.beatmap.set(id, beatmapFileString);
 
             const isBeatmapFinished = (parseInt(beatmapData.approved) > 0);
 
-            if (!isBeatmapFinished || !this.beatmapsDirectory) { // Delete beatmap
+            if (!isBeatmapFinished) { // Delete beatmap
                 if (await fs.existsSync(`${this.beatmapsDirectory}/${id}.json`)) {
                     await fs.unlinkSync(`${this.beatmapsDirectory}/${id}.json`);
                 }
