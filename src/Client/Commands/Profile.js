@@ -48,7 +48,7 @@ class ProfileCommand extends Command {
             .setDescription(
                 `• **Rank:** #${Util.addCommas(osuUser.pp_rank) || 'NaN'} (#${Util.addCommas(osuUser.pp_country_rank) || 'NaN'} :flag_${osuUser.country.toLowerCase()}:)\n` +
                 `• **Playtime:** ${Util.msToHumanReadable(parseInt(osuUser.total_seconds_played) * 1000)} (${Util.msToHours(parseInt(osuUser.total_seconds_played) * 1000)} hours)\n` +
-                `• **PP:** ${Util.addCommas(osuUser.pp_raw) || '0'}pp • **Highest:** ${Util.addCommas(await osuUser.getHighestPP())}pp\n\n` +
+                `• **PP:** ${Util.addCommas(osuUser.pp_raw || 0)}pp • **Highest:** ${Util.addCommas(await osuUser.getHighestPP() || 0)}pp\n\n` +
 
                 `• **Accuracy:** ${(Math.round(parseFloat(osuUser.accuracy) * 100) / 100) || 'NaN'}%\n` +
                 `• **Ranked Score:** ${Util.addCommas(osuUser.ranked_score) || 'NaN'}\n\n` +

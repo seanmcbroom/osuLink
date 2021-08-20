@@ -21,8 +21,28 @@ class User {
         this.profile_link = `https://osu.ppy.sh/users/${this.user_id}`;
 
         this.osu = osu;
+    }
 
-        this._webscrape();
+
+    /**
+     * Gets users most recent score
+     * @returns {Promise<Score[]>} Most recent score
+     */
+    async getBestScores() {
+        return new Promise((resolve) => {
+            this.osu.api.apiCall('/get_user_best', { u: this.user_id, type: 'id', m: 0, limit: 5 })
+                .then(async scores => {
+                    if (scores.length <= 0) return resolve(null);
+
+                    let Scores = new Array();
+                    for (const score of scores) {
+                        const beatmap = await this.osu.getBeatmap({ id: score.beatmap_id });
+                        Scores.push(new Score({ scoreData: score, beatmap: beatmap }));
+                    }
+
+                    return resolve(Scores);
+                })
+        })
     }
 
     /**
@@ -106,7 +126,7 @@ class User {
         }
 
         return new Promise((resolve) => {
-            this.osu.api.apiCall('/get_user_recent', { m: 0, limit: 20, u: this.user_id, type: 'id' })
+            this.osu.api.apiCall('/get_user_recent', { m: 0, limit: 50, u: this.user_id, type: 'id' })
                 .then(async recentScores => {
                     if (recentScores.length <= 0) return resolve(null);
 
@@ -122,13 +142,17 @@ class User {
     async getDiscordTag() {
         if (this.discord_tag) return this.discord_tag
 
-        return await this._webscrape().discord_tag;
+        await this._webscrape();
+
+        return this.discord_tag;
     }
 
     async getHighestPP() {
         if (this.top_pp) return this.top_pp
 
-        return await this._webscrape().top_pp;
+        await this._webscrape();
+
+        return this.top_pp;
     }
 
     async _webscrape() {
