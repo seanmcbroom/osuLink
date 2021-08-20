@@ -41,7 +41,7 @@ class MapCommand extends Command {
             .setAuthor(`${beatmap.title} by ${beatmap.creator}`, `http://s.ppy.sh/a/${beatmap.creator_id}`, beatmap.link)
             .setThumbnail(beatmap.cover_thumbnail)
             .setDescription(
-                `${Emojis[beatmap.getDifficulty({ mods: mods })]} __**${beatmap.version}**__ ${mods != '' ? `**${mods}**` : ''} [${beatmap.stars({ mods: mods })}★] ([mirror download](https://chimu.moe/en/d/${beatmap.beatmapset_id}))\n` +
+                `${Emojis[beatmap.getDifficulty({ mods: mods })]} __**${beatmap.version}**__ ${mods != '' ? `**${mods}**` : ''} [${beatmap.stars({ mods: mods })}★] *([mirror download](https://chimu.moe/en/d/${beatmap.beatmapset_id}))*\n` +
                 `• **Length:** ${Util.formatTimeMinutesSeconds((beatmap.total_length / mods.speedMultiplier) * 1000)} • **Combo:** ${beatmap.max_combo}\n` +
                 `• **AR:** ${mods.calculateAR(beatmap.diff_approach)} • **OD:** ${mods.calculateOD(beatmap.diff_overall)}` +
                 `• **HP:** ${mods.calculateHP(beatmap.diff_drain)} • **CS:** ${mods.calculateCS(beatmap.diff_size)}`
