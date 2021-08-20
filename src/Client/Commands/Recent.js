@@ -65,7 +65,7 @@ class RecentCommand extends Command {
             .setThumbnail(recentPlay.beatmap.cover_thumbnail)
             .setDescription(
                 `${Emojis[recentPlay.getDifficulty()]} __**${recentPlay.beatmap.version}**__ ${recentPlay.mods != '' ? `**${recentPlay.mods}**` : ''} [${recentPlay.starRating()}★]\n` +
-                `• **${Emojis[recentPlay.rank]}** • ${`**${recentPlay.pp()}pp**`} ${((recentPlay.maxcombo < recentPlay.beatmap.max_combo - 5) && ` (${recentPlay.fcpp()}pp for ${recentPlay.fc_accuracy}% FC)` || '')} • ${recentPlay.accuracy}%\n` +
+                `• **${Emojis[recentPlay.rank]}** • ${`**${recentPlay.pp()}pp**`} ${(((recentPlay.maxcombo < (recentPlay.beatmap.max_combo - 3)) || (recentPlay.countmiss > 0)) && ` (${recentPlay.fcpp()}pp for ${recentPlay.fc_accuracy}% FC)` || '')} • ${recentPlay.accuracy}%\n` +
                 `• ${Util.addCommas(recentPlay.score)} • x${recentPlay.maxcombo}/${recentPlay.beatmap.max_combo} • <${recentPlay.count300}/${recentPlay.count100}/${recentPlay.count50}/${recentPlay.countmiss}>\n` +
                 `${recentPlay.completion < 100 && `• **Completion:** *${recentPlay.completion}%*` || ''}`
             )
