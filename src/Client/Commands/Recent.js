@@ -69,8 +69,7 @@ class RecentCommand extends Command {
                 `• ${Util.addCommas(recentPlay.score)} • x${recentPlay.maxcombo}/${recentPlay.beatmap.max_combo} • <${recentPlay.count300}/${recentPlay.count100}/${recentPlay.count50}/${recentPlay.countmiss}>\n` +
                 `${recentPlay.completion < 100 && `• **Completion:** *${recentPlay.completion}%*` || ''}`
             )
-            .setFooter(`Played ${Util.msToHumanReadable((Date.now() - new Date(recentPlay.date)))} ago on the offical osu server.`)
-            .setTimestamp()
+            .setFooter(`Score set ${Util.msToHumanReadable((Date.now() - new Date(recentPlay.date)))} ago on the offical osu server.`)
 
         this.client.guildHandler.Get(interaction.guild.id).mostRecentBeatmap = recentPlay.beatmap.link;
 
