@@ -37,7 +37,7 @@ class Mods {
 
             if (modbits) {
                 this.modbits = modbits;
-                this.string = identifier;
+                this.string = identifier.toUpperCase();
             }
         }
 
