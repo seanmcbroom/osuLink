@@ -3,7 +3,7 @@ const Discord = require('discord.js');
 const os = require('node-os-utils');
 const Util = require('../../Modules/Util');
 
-class PingCommand extends Command {
+class SystemCommand extends Command {
     constructor() {
         super('system', {
             description: 'View system information about the bot.',
@@ -31,4 +31,4 @@ class PingCommand extends Command {
     }
 }
 
-module.exports = PingCommand;
+module.exports = SystemCommand;
