@@ -48,6 +48,8 @@ class MapCommand extends Command {
             )
             .setFooter(`95%▸${beatmap.calculatePP({ mods: mods, accuracy: 95 })}pp • 98%▸${beatmap.calculatePP({ mods: mods, accuracy: 98 })}pp • 100%▸${beatmap.calculatePP({ mods: mods })}pp`)
 
+        this.client.guildHandler.Get(interaction.guild.id).mostRecentBeatmap = beatmap.link;
+
         return interaction.reply({ embeds: [Embed] });
     }
 }
