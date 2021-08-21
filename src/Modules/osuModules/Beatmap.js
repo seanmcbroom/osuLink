@@ -1,10 +1,12 @@
 const ojsama = require('ojsama');
 
 const Difficulties = {
+    [8]: 'Expert++',
     [6.5]: 'Expert+',
     [5.3]: 'Expert',
     [4]: 'Insane',
     [2.7]: 'Hard',
+    [2]: 'Normal',
     [0]: 'Easy'
 }
 
