@@ -58,10 +58,9 @@ class CompareCommand extends Command {
         let Description = ''
         for (const score of scores) {
             Description += (Description == "" && "" || "\n\n") +
-                `${Emojis[score.getDifficulty()]} __**${score.beatmap.version}**__ ${score.mods != '' ? `**${score.mods}**` : ''} [${score.starRating()}★]\n` +
+                `${Emojis[score.getDifficulty()]} __**${score.beatmap.version}**__ ${score.mods != '' ? `**${score.mods}**` : ''} [${score.starRating()}★] <t:${(new Date(score.date).getTime() / 1000)}:R>\n` +
                 `• **${Emojis[score.rank]}** • ${`**${score.pp()}pp**`} ${((score.maxcombo < score.beatmap.max_combo - 5) && ` (${score.fcpp()}pp for ${score.fc_accuracy}% FC)` || '')} • ${score.accuracy}%\n` +
-                `• ${Util.addCommas(score.score)} • x${score.maxcombo}/${score.beatmap.max_combo} • <${score.count300}/${score.count100}/${score.count50}/${score.countmiss}>\n` +
-                `*(Set ${Util.msToHumanReadable((Date.now() - new Date(score.date)))} ago on the offical osu server.)*`
+                `• ${Util.addCommas(score.score)} • x${score.maxcombo}/${score.beatmap.max_combo} • <${score.count300}/${score.count100}/${score.count50}/${score.countmiss}>`
         }
 
         const Embed = new Discord.MessageEmbed()
