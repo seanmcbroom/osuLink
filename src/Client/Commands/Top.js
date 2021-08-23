@@ -42,7 +42,7 @@ class TopCommand extends Command {
         const osuUser = await this.client.osu.getUser({ identifier: osuID, idetifierType: 'id' });
         if (!osuUser) return interaction.reply('Unabled to find osu account. Try again later.')
 
-        const scores = await osuUser.getBestScores();
+        const scores = (await osuUser.getBestScores()).slice(0, 5); // Gets first 5 scores
         if (!scores) return interaction.reply('No scores found, try again later.')
 
         let Description = ''
