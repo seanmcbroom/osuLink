@@ -30,7 +30,7 @@ class User {
      */
     async getBestScores() {
         return new Promise((resolve) => {
-            this.osu.api.apiCall('/get_user_best', { u: this.user_id, type: 'id', m: 0, limit: 5 })
+            this.osu.api.apiCall('/get_user_best', { u: this.user_id, type: 'id', m: 0, limit: 100 })
                 .then(async scores => {
                     if (scores.length <= 0) return resolve(null);
 
