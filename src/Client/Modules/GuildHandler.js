@@ -83,6 +83,16 @@ class Guild {
 
         this.client.interactionHandler.loadSlashCommandsOnGuild(this);
     }
+
+
+    async updateMember(User) {
+        //todo: Update nickname, roles, verified stats, etc.
+    }
+
+    async postMemberOsuScore(User, Score) {
+        console.log(User.username, Score)
+        //todo: Post osu scores to tracking channel.
+    }
 }
 
 module.exports = { GuildHandler, Guild };
