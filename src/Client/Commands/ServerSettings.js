@@ -53,7 +53,7 @@ class ServerSettingsCommand extends Command {
     }
 
     async exec(interaction) {
-        const guildDatastore = this.client.guildHandler.Get(interaction.guild.id).Datastore;
+        const guild = this.client.guildHandler.Get(interaction.guild.id);
 
         const subcommand = interaction.options.getSubcommand();
         const setting = interaction.options.getString('setting');
@@ -72,23 +72,24 @@ class ServerSettingsCommand extends Command {
                     const botRole = interaction.guild.me.roles.botRole;
                     if (botRole.rawPosition < role.rawPosition) return interaction.reply('I can\'t manage this role, please move it under me and try again.');
 
-                    const currentRoleId = await guildDatastore.getData('verifiedRole');
+                    const currentRoleId = await guild.Datastore.getData('verifiedRole');
                     if (currentRoleId == roleId) return interaction.reply('This verified role is already set!');
 
-                    await guildDatastore.setSetting('verifiedRole', roleId);
+                    await guild.Datastore.setSetting('verifiedRole', roleId);
 
                     return interaction.reply('Successfully set verified role!');
                 },
 
                 remove: async () => {
-                    const verifiedRole = await guildDatastore.getData('verifiedRole');
+                    const verifiedRole = await guild.Datastore.getData('verifiedRole');
                     if (!verifiedRole) return interaction.reply('There is no verification role set on this server.');
 
-                    await guildDatastore.setSetting('verifiedRole', null);
+                    await guild.Datastore.setSetting('verifiedRole', null);
 
                     interaction.reply('Successfully removed verified role.');
                 }
             },
+
             trackingchannel: {
                 set: async (value) => {
                     const match = value.match(/(\d+)/);
@@ -98,19 +99,19 @@ class ServerSettingsCommand extends Command {
                     const channel = interaction.guild.channels.cache.find(c => c.id === channelId);
                     if (!channel) return interaction.reply('I could not find that channel, please try again.');
 
-                    const currentChannelId = await guildDatastore.getData('trackingChannel');
+                    const currentChannelId = await guild.Datastore.getData('trackingChannel');
                     if (currentChannelId == channelId) return interaction.reply('This tracking channel is already set!');
 
-                    await guildDatastore.setSetting('trackingChannel', channelId);
+                    await guild.Datastore.setSetting('trackingChannel', channelId);
 
                     return interaction.reply('Successfully set tracking channel!');
                 },
 
                 remove: async () => {
-                    const trackingChannel = await guildDatastore.getData('trackingChannel');
+                    const trackingChannel = await guild.Datastore.getData('trackingChannel');
                     if (!trackingChannel) return interaction.reply('There is no tracking channel set on this server.');
 
-                    await guildDatastore.setSetting('trackingChannel', null);
+                    await guild.Datastore.setSetting('trackingChannel', null);
 
                     interaction.reply('Successfully removed tracking channel.');
                 }
@@ -125,8 +126,8 @@ class ServerSettingsCommand extends Command {
                 DataModifiers[setting].remove();
             },
             get: async () => {
-                const verifiedRole = await guildDatastore.getData('verifiedRole');
-                const trackingChannel = await guildDatastore.getData('trackingChannel');
+                const verifiedRole = await guild.Datastore.getData('verifiedRole');
+                const trackingChannel = await guild.Datastore.getData('trackingChannel');
 
                 const Embed = new Discord.MessageEmbed()
                     .setColor(this.client.Settings.Colors.Main)
