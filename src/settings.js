@@ -20,6 +20,7 @@ const Settings = {
         Guild: {
             verifiedRole: null,
             trackingChannel: null,
+            trackingWhitelist: {}
         }
     },
 
