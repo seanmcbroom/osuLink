@@ -30,7 +30,11 @@ class UntrackCommand extends Command {
 
         if (!trackingWhitelist[user.id]) return interaction.reply('User is not being tracked.');
 
-        trackingWhitelist[user.id] = null;
+        if (trackingWhitelist.length == 1) {
+            trackingWhitelist = {}
+        } else {
+            trackingWhitelist[user.id] = null;
+        }
 
         guild.Datastore.setSetting('trackingWhitelist', trackingWhitelist);
         interaction.reply(`No longer tracking **${interaction.options.getUser('user').username}**.`);
