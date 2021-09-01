@@ -14,7 +14,10 @@ const Settings = {
     DataFormats: {
         User: {
             osuID: null,
-            bestScores: {}
+            tracking: {
+                bestScores: {},
+                pp: 0
+            }
         },
 
         Guild: {

@@ -35,7 +35,12 @@ class User {
                     if (scores.length <= 0) return resolve(null);
 
                     let Scores = new Array();
-                    for (const score of scores) {
+                    for (const i in scores) {
+                        const score = scores[i]
+                        score.profile_index = parseInt(i) + 1;
+                        score.profile_pp = Math.round(score.pp * 100) / 100;
+                        score.player = this;
+
                         const beatmap = await this.osu.getBeatmap({ id: score.beatmap_id });
                         Scores.push(new Score({ scoreData: score, beatmap: beatmap }));
                     }

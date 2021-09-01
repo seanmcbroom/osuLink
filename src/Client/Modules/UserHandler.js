@@ -1,4 +1,5 @@
 const { Datastore } = require('./Datastore');
+const Discord = require('discord.js');
 
 class UserHandler {
     constructor(client, options = {}) {
@@ -57,7 +58,6 @@ class UserHandler {
     }
 
     Remove(userData) {
-        //console.log(`Removed User ${userData.username}`)
         return this._cache.delete(userData.id);
     }
 
@@ -98,92 +98,114 @@ class User {
             id: this.id
         });
 
-        this.watchForUpdates();
+        this.track();
     }
 
-    watchForUpdates() {
-        this.watcher = {
+    track() {
+        this.tracker = {
             check: async () => {
-                const getNewOsuScores = async () => {
-                    let newScores = [];
+                const trackingData = await this.Datastore.getData('tracking');
+                const guilds = this.getGuilds();
 
+                const checkOsuScores = async () => {
                     const osuUser = await this.getOsuUser();
+                    if (!osuUser) return;
 
-                    if (osuUser) {
-                        const bestScoresOld = await this.Datastore.getData('bestScores');
-                        const bestScores = await osuUser.getBestScores();
+                    let newScores = [];
+                    const bestScores = await osuUser.getBestScores();
+                    if (!bestScores) return;
 
-                        if (bestScores) {
-                            if (Object.keys(bestScoresOld).length > 0) { // Check for new scores
-                                for (const score of bestScores) {
-                                    let found = false;
-                                    for (const oldScore of bestScoresOld) {
-                                        if (oldScore.S == score.score_id) {
-                                            found = true;
-                                            break
-                                        }
-                                    }
-                                    if (!found) newScores.push(score);
+                    const bestScoresExist = trackingData.bestScores && Object.keys(trackingData.bestScores).length > 0
+                    let foundNewScore = false;
+
+                    for (const score of bestScores) {
+                        let found = false;
+
+                        if (bestScoresExist) {
+                            for (const index in trackingData.bestScores) {
+                                if (trackingData.bestScores[index].S == score.score_id) {
+                                    found = true;
+                                    break;
                                 }
                             }
+                        }
 
-                            if ((Object.keys(bestScoresOld).length <= 0) || (newScores.length > 0)) { // Push new scores to datastore
-                                let compressedScores = {};
+                        if (!found) {
+                            newScores.push(score);
+                            foundNewScore = true;
+                        }
+                    }
 
-                                for (const index in bestScores) {
-                                    const score = bestScores[index];
+                    this.tracker.nextCheck *= (foundNewScore) ? 0.2 : 1.5;
 
-                                    compressedScores[index] = {
-                                        S: score.score_id
-                                    };
-                                }
+                    if (newScores.length > 0 && bestScoresExist) { // Post new scores to guilds
+                        for (const score of newScores) {
+                            const weighted = (p) => p * Math.pow(0.95, (score.profile_index - 1));
 
-                                this.Datastore.setSetting('bestScores', compressedScores);
+                            let gain;
+                            if (trackingData.bestScores[score.profile_index - 1]) {
+                                const previousScorePerformance = trackingData.bestScores[score.profile_index - 1].P;
+                                gain = Math.round((weighted(score.profile_pp) - weighted(previousScorePerformance)) * 100) / 100;
+                            } else {
+                                gain = Math.round(weighted(score.profile_pp) * 100) / 100;
+                            }
+
+                            for (const guild of guilds) {
+                                guild.postMemberOsuScore(this, score, gain);
                             }
                         }
                     }
 
-                    return newScores;
-                }
+                    if (newScores.length > 0) { // Push new data to tracking
+                        let compressedScores = {};
+                        for (const index in bestScores) {
+                            const score = bestScores[index];
 
-                const newScores = await getNewOsuScores();
+                            compressedScores[index] = {
+                                S: score.score_id,
+                                P: score.profile_pp
+                            };
+                        }
 
-                for (const guild of this.getGuilds()) {
-                    guild.updateMember(this);
+                        trackingData.bestScores = compressedScores;
+                        trackingData.pp = osuUser.pp_raw;
 
-                    for (const score of newScores) {
-                        guild.postMemberOsuScore(this, score);
+                        this.Datastore.setSetting('tracking', trackingData);
                     }
                 }
 
-                if (this.watcher) {
-                    this.watcher.nextCheck *= (newScores.length > 0) ? 0.5 : 1.5;
-                    this.watcher.nextCheck = Math.min(Math.max(this.watcher.nextCheck, 0.1), 1.5); // Clamp next check between 0.1 and 1.5
+                for (const guild of guilds) {
+                    guild.updateMember(this);
+                }
 
-                    this.watcher.start();
+                await checkOsuScores();
+
+                if (this.tracker) {
+                    this.tracker.nextCheck = Math.min(Math.max(this.tracker.nextCheck, 0.1), 2); // Clamp next check between 0.1 and 2
+
+                    this.tracker.start();
                 }
             },
 
             start: () => {
-                clearTimeout(this.watcher.timer);
-                this.watcher.timer = setTimeout(this.watcher.check, (this.watcher.nextCheck * 60 * 60 * 1000));
+                clearTimeout(this.tracker.timer);
+                this.tracker.timer = setTimeout(this.tracker.check, (this.tracker.nextCheck * 60 * 60 * 1000));
             },
 
             nextCheck: 0, // Time in hours between checks
         }
 
-        this.watcher.start()
+        this.tracker.start()
     }
 
     getGuilds() {
         let Guilds = [];
 
         for (const guild of this.client.guilds._cache) {
-            for (const member of guild[1].members._cache) {
-                if (member[1].user.id == this.id) {
-                    const Guild = this.client.guildHandler.Get(guild[1].id);
-                    Guilds.push(Guild);
-                }
+            if (guild[1].members._cache.get(this.id)) {
+                const Guild = this.client.guildHandler.Get(guild[1].id);
+
+                Guilds.push(Guild);
             }
         }
 
