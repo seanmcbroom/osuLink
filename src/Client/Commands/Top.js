@@ -50,7 +50,7 @@ class TopCommand extends Command {
             Description += (Description == "" && "" || "\n\n") +
                 `__**${score.beatmap.title}**__ <t:${(new Date(score.date).getTime() / 1000)}:R>\n` +
                 `${Emojis[score.getDifficulty()]} [${score.beatmap.version}] ${score.mods != '' ? `**${score.mods}**` : ''} [${score.starRating()}★]\n` +
-                `• **${Emojis[score.rank]}** • ${`**${score.pp()}pp**`} ${((score.maxcombo < score.beatmap.max_combo - 5) && ` (${score.fcpp()}pp for ${score.fc_accuracy}% FC)` || '')} • ${score.accuracy}%\n` +
+                `• **${Emojis[score.rank]}** • ${`**${score.profile_pp}pp**`} ${((score.maxcombo < score.beatmap.max_combo - 5) && ` (${score.fcpp()}pp for ${score.fc_accuracy}% FC)` || '')} • ${score.accuracy}%\n` +
                 `• ${Util.addCommas(score.score)} • x${score.maxcombo}/${score.beatmap.max_combo} • <${score.count300}/${score.count100}/${score.count50}/${score.countmiss}>`
         }
 
