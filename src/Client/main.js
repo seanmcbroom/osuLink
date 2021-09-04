@@ -4,7 +4,6 @@ const { UserHandler } = require('./Modules/UserHandler');
 const { InteractionHandler } = require('./Modules/InteractionHandler');
 
 const { osu } = require('../Modules/osu');
-const { REST } = require('@discordjs/rest');
 const { Firebase } = require('./Modules/Datastore')
 
 const Settings = require('../settings.js');
@@ -16,6 +15,8 @@ class Client extends AkairoClient {
     }, {
       intents: 3
     });
+
+    this.Settings = Settings;
 
     this.interactionHandler = new InteractionHandler(this, {
       directory: './src/Client/Commands',
@@ -37,8 +38,6 @@ class Client extends AkairoClient {
       DataFormat: Settings.DataFormats.User,
     })
 
-    this.REST = new REST({ version: '9' }).setToken(Settings.BotToken);
-
     this.Database = new Firebase({
       FirebaseLogin: Settings.Firebase,
     })
@@ -53,8 +52,6 @@ class Client extends AkairoClient {
     this.interactionHandler.loadAll();
     this.inhibitorHandler.loadAll();
     this.listenerHandler.loadAll();
-
-    this.Settings = Settings;
 
     this.once('ready', this.setup);
   }

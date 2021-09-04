@@ -1,8 +1,7 @@
-const { Routes } = require('discord-api-types/v9');
 const { Permissions } = require('discord.js');
-
 const fs = require('fs');
 const path = require('path');
+const request = require('request');
 
 const COMMAND_TYPES = {
 	'CHAT_INPUT': 1,
@@ -47,6 +46,8 @@ class InteractionHandler {
 
 	setup() {
 		this.client.once('ready', () => {
+			this.loadSlashCommands();
+
 			this.client.on('interactionCreate', async interaction => {
 				this.handle(interaction);
 			});
@@ -238,13 +239,27 @@ class InteractionHandler {
 		}
 	}
 
+	async loadSlashCommands() {
+		try {
+			await request.put({
+				headers: { Authorization: `Bot ${this.client.Settings.BotToken}`, 'Content-Type': 'application/json' },
+				url: `https://discord.com/api/v8/applications/${this.client.application.id}/commands`,
+				body: JSON.stringify(this.Interactions.Structure),
+			})
+		} catch (error) {
+			if (error.code != 50001) { // Missing Access error
+				console.log(error);
+			}
+		}
+	}
+
 	async loadSlashCommandsOnGuild(guild) {
 		try {
-			//console.log(this.Interactions.Structure)
-			await this.client.REST.put(
-				Routes.applicationGuildCommands(this.client.application.id, guild.id),
-				{ body: this.Interactions.Structure }
-			);
+			await request.put({
+				headers: { Authorization: `Bot ${this.client.Settings.BotToken}`, 'Content-Type': 'application/json' },
+				url: `https://discord.com/api/v8/applications/${this.client.application.id}/guilds/${guild.id}/commands`,
+				body: JSON.stringify(this.Interactions.Structure),
+			})
 		} catch (error) {
 			if (error.code != 50001) { // Missing Access error
 				console.log(error);
