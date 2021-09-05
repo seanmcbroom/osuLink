@@ -1,7 +1,6 @@
-const { AkairoClient, InhibitorHandler, ListenerHandler } = require('discord-akairo');
+const { AkairoClient, InteractionHandler, ListenerHandler } = require('discord-akairo');
 const { GuildHandler } = require('./Modules/GuildHandler');
 const { UserHandler } = require('./Modules/UserHandler');
-const { InteractionHandler } = require('./Modules/InteractionHandler');
 
 const { osu } = require('../Modules/osu');
 const { Firebase } = require('./Modules/Datastore')
@@ -20,10 +19,6 @@ class Client extends AkairoClient {
 
     this.interactionHandler = new InteractionHandler(this, {
       directory: './src/Client/Commands',
-    })
-
-    this.inhibitorHandler = new InhibitorHandler(this, {
-      directory: './src/Client/Inhibitors',
     });
 
     this.listenerHandler = new ListenerHandler(this, {
@@ -50,7 +45,6 @@ class Client extends AkairoClient {
     this.interactionHandler.useInhibitorHandler(this.inhibitorHandler);
 
     this.interactionHandler.loadAll();
-    this.inhibitorHandler.loadAll();
     this.listenerHandler.loadAll();
 
     this.once('ready', this.setup);

@@ -87,7 +87,13 @@ class Guild {
             id: this.id
         });
 
-        this.client.interactionHandler.loadSlashCommandsOnGuild(this);
+        this.loadSlashCommandsOfTypes(['main', 'test']);
+    }
+
+    loadSlashCommandsOfTypes(types) {
+        if (this.client.interactionHandler) {
+            this.client.interactionHandler.loadSlashCommandsOfTypesOnGuild(this, types);
+        }
     }
 
 
