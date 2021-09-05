@@ -87,12 +87,12 @@ class Guild {
             id: this.id
         });
 
-        this.loadSlashCommandsOfTypes(['main', 'test']);
+        this.loadInteractionsOfTypes(['main', 'test']);
     }
 
-    loadSlashCommandsOfTypes(types) {
+    loadInteractionsOfTypes(types) {
         if (this.client.interactionHandler) {
-            this.client.interactionHandler.loadSlashCommandsOfTypesOnGuild(this, types);
+            this.client.interactionHandler.loadInteractionsOfTypesOnGuild(this, types);
         }
     }
 
