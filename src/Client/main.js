@@ -42,8 +42,6 @@ class Client extends AkairoClient {
       beatmapsDirectory: './src/Components/beatmaps'
     })
 
-    this.interactionHandler.useInhibitorHandler(this.inhibitorHandler);
-
     this.interactionHandler.loadAll();
     this.listenerHandler.loadAll();
 
