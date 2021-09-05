@@ -8,6 +8,7 @@ class CompareCommand extends Command {
     constructor() {
         super('compare', {
             description: 'Compare scores.',
+            tags: ['general'],
 
             ratelimit: 2,
             cooldown: 10000,

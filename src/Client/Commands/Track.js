@@ -8,6 +8,7 @@ class TrackCommand extends Command {
     constructor() {
         super('track', {
             description: 'Track top scores.',
+            tags: ['premium'],
 
             userPermissions: 32n,
 

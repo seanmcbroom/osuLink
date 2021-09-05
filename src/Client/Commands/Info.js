@@ -7,6 +7,7 @@ class InfoCommand extends Command {
     constructor() {
         super('info', {
             description: 'Get information about the bot.',
+            tags: ['general'],
         });
     }
 

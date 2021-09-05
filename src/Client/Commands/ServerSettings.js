@@ -13,6 +13,8 @@ class ServerSettingsCommand extends Command {
     constructor() {
         super('serversettings', {
             description: 'Manage server settings.',
+            tags: ['management'],
+
             userPermissions: 32n,
             ratelimit: 1,
             cooldown: 5000,

@@ -4,8 +4,9 @@ const Discord = require('discord.js');
 class LinkCommand extends Command {
     constructor() {
         super('link', {
-            aliases: ['setosu'],
             description: 'Link an osu account to osuLink.',
+            aliases: ['setosu'],
+            tags: ['general'],
 
             ratelimit: 2,
             cooldown: 60000,

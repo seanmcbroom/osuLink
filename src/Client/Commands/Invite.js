@@ -4,6 +4,7 @@ class InviteCommand extends Command {
     constructor() {
         super('invite', {
             description: 'Add the bot to another server.',
+            tags: ['general'],
         });
     }
 

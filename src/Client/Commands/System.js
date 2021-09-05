@@ -7,6 +7,7 @@ class SystemCommand extends Command {
     constructor() {
         super('system', {
             description: 'View system information about the bot.',
+            tags: ['dev']
         });
     }
 

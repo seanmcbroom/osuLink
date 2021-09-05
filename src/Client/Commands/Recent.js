@@ -8,6 +8,7 @@ class RecentCommand extends Command {
     constructor() {
         super('recent', {
             description: 'View most recent play.',
+            tags: ['general'],
 
             ratelimit: 1,
             cooldown: 10000,

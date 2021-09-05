@@ -87,15 +87,8 @@ class Guild {
             id: this.id
         });
 
-        this.loadInteractionsOfTypes(['main', 'test']);
+        this.client.interactionHandler.loadInteractionsOfTagsOnGuild(this, ['premium', 'dev', 'management']);
     }
-
-    loadInteractionsOfTypes(types) {
-        if (this.client.interactionHandler) {
-            this.client.interactionHandler.loadInteractionsOfTypesOnGuild(this, types);
-        }
-    }
-
 
     async updateMember(User) {
         //todo: Update nickname, roles, verified stats, etc.

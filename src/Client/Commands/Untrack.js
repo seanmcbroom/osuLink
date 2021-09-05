@@ -8,6 +8,7 @@ class UntrackCommand extends Command {
     constructor() {
         super('untrack', {
             description: 'Remove user from tracking.',
+            tags: ['premium'],
 
             userPermissions: 32n,
 

@@ -8,6 +8,7 @@ class TopCommand extends Command {
     constructor() {
         super('top', {
             description: 'View top plays.',
+            tags: ['general'],
 
             ratelimit: 1,
             cooldown: 10000,
