@@ -30,31 +30,57 @@ class CompareCommand extends Command {
     }
 
     async exec(interaction) {
-        const link = interaction.options.getString('link') || this.client.guildHandler.Get(interaction.guild.id).mostRecentBeatmap;
-        if (!link) return interaction.reply('No beatmap found.');
+        const link = interaction.options.getString('link')
+            || this.client.guildHandler.Get(interaction.guild.id).mostRecentBeatmap;
+
+        if (!link) {
+            return interaction.reply({ content: 'No beatmap found.', ephemeral: true });
+        }
 
         const match = link.match(/(\d+)/g);
         const beatmapId = match ? match[match.length - 1] : null;
-        if (!beatmapId) return interaction.reply('No beatmap found.');
 
-        const beatmap = await this.client.osu.getBeatmap({ id: beatmapId })
-        if (!beatmap) return interaction.reply('No beatmap found.');
+        if (!beatmapId) {
+            return interaction.reply({ content: 'No beatmap found.', ephemeral: true });
+        }
 
-        const target = interaction.isContextMenu() ? this.client.users.cache.get(interaction.targetId) : (interaction.options.getUser('user') || interaction.user)
-        if (!target) return interaction.reply('No target found, try again.')
+        const beatmap = await this.client.osu.getBeatmap({ id: beatmapId });
+
+        if (!beatmap) {
+            return interaction.reply({ content: 'No beatmap found.', ephemeral: true });
+        }
+
+        const target = interaction.isContextMenu()
+            ? this.client.users.cache.get(interaction.targetId)
+            : (interaction.options.getUser('user') || interaction.user)
+
+        if (!target) {
+            return interaction.reply({ content: 'No target found, try again.', ephemeral: true });
+        }
 
         const user = this.client.userHandler.Get(target);
-        if (!user) return interaction.reply('Unable to find user, try again later.')
+
+        if (!user) {
+            return interaction.reply({ content: 'Unable to find user, try again later.', ephemeral: true });
+        }
 
         const osuID = interaction.options.getString('name') || (await user.Datastore.getData('osuID'));
-        if (!osuID) return interaction.reply('Target does not have a linked osu account.')
+
+        if (!osuID) {
+            return interaction.reply({ content: 'Target does not have a linked osu account.', ephemeral: true });
+        }
 
         const osuUser = await this.client.osu.getUser({ identifier: osuID, idetifierType: 'id' });
-        if (!osuUser) return interaction.reply('Unabled to find osu account. Try again later.')
+
+        if (!osuUser) {
+            return interaction.reply({ content: 'Unabled to find osu account. Try again later.', ephemeral: true });
+        }
 
         const scores = await osuUser.getScores({ beatmapId: beatmapId });
-        if (!scores) return interaction.reply('No scores found on this map.')
-        console.log(scores)
+
+        if (!scores) {
+            return interaction.reply('No scores found on this map.');
+        }
 
         let Description = ''
         for (const score of scores) {

@@ -1,7 +1,8 @@
 const { Command } = require('discord-akairo');
 const Discord = require('discord.js');
-const os = require('node-os-utils');
 const Util = require('../../Modules/Util');
+
+const os = require('node-os-utils');
 
 class SystemCommand extends Command {
     constructor() {
@@ -28,7 +29,7 @@ class SystemCommand extends Command {
             )
             .setTimestamp()
 
-        return interaction.reply({ embeds: [Embed] });
+        return interaction.reply({ embeds: [Embed], ephemeral: true });
     }
 }
 

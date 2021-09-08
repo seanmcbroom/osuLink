@@ -9,7 +9,7 @@ class InviteCommand extends Command {
     }
 
     exec(interaction) {
-        return interaction.reply(this.client.Settings.Links.Invite);
+        return interaction.reply({ content: this.client.Settings.Links.Invite, ephemeral: true });
     }
 }
 

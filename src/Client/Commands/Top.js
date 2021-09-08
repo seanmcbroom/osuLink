@@ -31,20 +31,39 @@ class TopCommand extends Command {
     }
 
     async exec(interaction) {
-        const target = interaction.isContextMenu() ? this.client.users.cache.get(interaction.targetId) : (interaction.options.getUser('user') || interaction.user)
-        if (!target) return interaction.reply('No target found, try again.')
+        const target = interaction.isContextMenu()
+            ? this.client.users.cache.get(interaction.targetId)
+            : (interaction.options.getUser('user') || interaction.user);
+
+        if (!target) {
+            return interaction.reply({ content: 'No target found, try again.', ephemeral: true });
+        }
 
         const user = this.client.userHandler.Get(target);
-        if (!user) return interaction.reply('Unable to find user, try again later.')
 
-        const osuID = interaction.options.getString('name') || (await user.Datastore.getData('osuID'));
-        if (!osuID) return interaction.reply('Target does not have a linked osu account.')
+        if (!user) {
+            return interaction.reply({ content: 'Unable to find user, try again later.', ephemeral: true });
+        }
+
+        const osuID = interaction.options.getString('name')
+            || (await user.Datastore.getData('osuID'));
+
+        if (!osuID) {
+            return interaction.reply({ content: 'Target does not have a linked osu account.', ephemeral: true });
+        }
 
         const osuUser = await this.client.osu.getUser({ identifier: osuID, idetifierType: 'id' });
-        if (!osuUser) return interaction.reply('Unabled to find osu account. Try again later.')
 
-        const scores = (await osuUser.getBestScores()).slice(0, 5); // Gets first 5 scores
-        if (!scores) return interaction.reply('No scores found, try again later.')
+        if (!osuUser) {
+            return interaction.reply({ content: 'Unabled to find osu account. Try again later.', ephemeral: true });
+        }
+
+        const scores = (await osuUser.getBestScores())
+            .slice(0, 5); // Slice method returns first 5 entrys in best scores.
+
+        if (!scores) {
+            return interaction.reply({ content: 'No scores found, try again later.' });
+        }
 
         let Description = ''
         for (const score of scores) {

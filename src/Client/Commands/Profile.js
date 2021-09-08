@@ -33,17 +33,31 @@ class ProfileCommand extends Command {
     }
 
     async exec(interaction) {
-        const target = interaction.isContextMenu() ? this.client.users.cache.get(interaction.targetId) : (interaction.options.getUser('user') || interaction.user)
-        if (!target) return interaction.reply('No target found, try again.')
+        const target = interaction.isContextMenu()
+            ? this.client.users.cache.get(interaction.targetId)
+            : (interaction.options.getUser('user') || interaction.user);
+
+        if (!target) {
+            return interaction.reply({ content: 'No target found, try again.', ephemeral: true });
+        }
 
         const user = this.client.userHandler.Get(target);
-        if (!user) return interaction.reply('Unable to find user, try again later.')
+
+        if (!user) {
+            return interaction.reply({ content: 'Unable to find user, try again later.', ephemeral: true });
+        }
 
         const osuID = interaction.options.getString('name') || (await user.Datastore.getData('osuID'));
-        if (!osuID) return interaction.reply('Target does not have a linked osu account.')
+
+        if (!osuID) {
+            return interaction.reply({ content: 'Target does not have a linked osu account.', ephemeral: true });
+        }
 
         const osuUser = await this.client.osu.getUser({ identifier: osuID, idetifierType: 'id' });
-        if (!osuUser) return interaction.reply('Unabled to find osu account. Try again later.')
+
+        if (!osuUser) {
+            return interaction.reply({ content: 'Unabled to find osu account. Try again later.', ephemeral: true });
+        }
 
         const Embed = new Discord.MessageEmbed()
             .setColor(this.client.Settings.Colors.Main)

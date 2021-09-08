@@ -19,9 +19,7 @@ class Client extends AkairoClient {
 
     this.interactionHandler = new InteractionHandler(this, {
       directory: './src/Client/Commands',
-      defaultCommandTags: [
-        'general'
-      ]
+      defaultCommandTags: ['general']
     });
 
     this.listenerHandler = new ListenerHandler(this, {

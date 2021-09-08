@@ -32,7 +32,7 @@ class InfoCommand extends Command {
             )
             .setFooter(`Performance Point calculation is sourced from ojsama.`)
 
-        return interaction.reply({ embeds: [Embed] });
+        return interaction.reply({ embeds: [Embed], ephemeral: true });
     }
 }
 

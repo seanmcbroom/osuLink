@@ -15,9 +15,10 @@ class ServerSettingsCommand extends Command {
             description: 'Manage server settings.',
             tags: ['management'],
 
-            userPermissions: 32n,
             ratelimit: 1,
             cooldown: 5000,
+
+            userPermissions: 32n,
 
             slashCommandOptions: [{
                 name: 'get',

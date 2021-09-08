@@ -1,14 +1,13 @@
 const { Command } = require('discord-akairo');
-const Discord = require('discord.js');
-
-const Emojis = require('../../Modules/Emojis');
-const Util = require('../../Modules/Util');
 
 class UntrackCommand extends Command {
     constructor() {
         super('untrack', {
             description: 'Remove user from tracking.',
-            tags: ['premium'],
+            tags: ['general', 'management'],
+
+            ratelimit: 5,
+            cooldown: 30000,
 
             userPermissions: 32n,
 
@@ -23,22 +22,27 @@ class UntrackCommand extends Command {
 
     async exec(interaction) {
         const guild = this.client.guildHandler.Get(interaction.guild.id);
-
-        const trackingWhitelist = await guild.Datastore.getData('trackingWhitelist');
-
         const user = this.client.userHandler.Get(interaction.options.getUser('user'));
-        if (!user) return interaction.reply('No user found, try again.');
 
-        if (!trackingWhitelist[user.id]) return interaction.reply('User is not being tracked.');
-
-        if (trackingWhitelist.length == 1) {
-            trackingWhitelist = {}
-        } else {
-            trackingWhitelist[user.id] = null;
+        if (!user) {
+            return interaction.reply({ content: 'No user found, try again.', ephemeral: true });
         }
 
-        guild.Datastore.setSetting('trackingWhitelist', trackingWhitelist);
-        interaction.reply(`No longer tracking **${interaction.options.getUser('user').username}**.`);
+        let trackingWhitelist = await guild.Datastore.getData('trackingWhitelist');
+
+        if (!trackingWhitelist[user.id]) {
+            return interaction.reply({ content: `**${user.username}** is not currently being tracked.`, ephemeral: true });
+        }
+
+        interaction.deferReply({ ephemeral: true });
+
+        trackingWhitelist = (trackingWhitelist.length > 1)
+            ? trackingWhitelist.splice(user.id, 1)
+            : {};
+
+        await guild.Datastore.setSetting('trackingWhitelist', trackingWhitelist);
+
+        return interaction.followUp({ content: `No longer tracking **${interaction.options.getUser('user').username}**.` });
     }
 }
 

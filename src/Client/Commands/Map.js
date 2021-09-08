@@ -26,14 +26,23 @@ class MapCommand extends Command {
 
     async exec(interaction) {
         const link = interaction.options.getString('link') || this.client.guildHandler.Get(interaction.guild.id).mostRecentBeatmap;
-        if (!link) return interaction.reply('No beatmap found.');
+
+        if (!link) {
+            return interaction.reply({ content: 'No beatmap found.', ephemeral: true });
+        }
 
         const match = link.match(/(\d+)/g);
         const beatmapId = match ? match[match.length - 1] : null;
-        if (!beatmapId) return interaction.reply('No beatmap found.');
+
+        if (!beatmapId) {
+            return interaction.reply({ content: 'No beatmap found.', ephemeral: true });
+        }
 
         const beatmap = await this.client.osu.getBeatmap({ id: beatmapId })
-        if (!beatmap) return interaction.reply('No beatmap found.');
+
+        if (!beatmap) {
+            return interaction.reply({ content: 'No beatmap found.', ephemeral: true });
+        }
 
         const mods = this.client.osu.getMods({ identifier: interaction.options.getString('mods') || 'NM' });
 

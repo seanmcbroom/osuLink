@@ -1,4 +1,4 @@
-const Settings = {
+module.exports = {
     Owners: [517529173061795840, 866759411267141682],
 
     Links: {
@@ -38,5 +38,3 @@ const Settings = {
         storageBucket: `${process.env.FIREBASE_DATABASE_ID}.appspot.com`
     }
 }
-
-module.exports = Settings;
