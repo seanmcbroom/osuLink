@@ -56,7 +56,7 @@ class RecentCommand extends Command {
         const user = this.client.userHandler.Get(target);
 
         if (!user) {
-            return interaction.reply({ content: 'Unable to find user, try again later.', ephemeral: true });
+            return interaction.reply({ content: 'Unable to find user, try again.', ephemeral: true });
         }
 
         const osuIdentifier = interaction.options.getString('name')
@@ -69,7 +69,7 @@ class RecentCommand extends Command {
         const osuUser = await this.client.osu.getUser({ identifier: osuIdentifier });
 
         if (!osuUser) {
-            return interaction.reply({ content: `Unable to find osu account, try again later.`, ephemeral: true });
+            return interaction.reply({ content: `Unable to find user, try again later.`, ephemeral: true });
         }
 
         await interaction.deferReply();
@@ -77,24 +77,27 @@ class RecentCommand extends Command {
         const recentScore = await osuUser.getRecent({ filter: interaction.options.getString('filter') || 'recent' });
 
         if (!recentScore) {
-            return interaction.reply({ content: 'No recent scores. found.' });
+            return interaction.followUp({ content: 'No recent scores found.' });
         }
 
-        const Embed = new Discord.MessageEmbed()
-            .setColor(this.client.Settings.Colors.Main)
-            .setAuthor(`${recentScore.beatmap.title} by ${recentScore.beatmap.creator}`, osuUser.avatar, recentScore.beatmap.link)
-            .setThumbnail(recentScore.beatmap.cover_thumbnail)
-            .setDescription(
-                `${Emojis[recentScore.getDifficulty()]} __**${recentScore.beatmap.version}**__ ${recentScore.mods != '' ? `**${recentScore.mods}**` : ''} [${recentScore.starRating()}★]\n` +
-                `• **${Emojis[recentScore.rank]}** • ${`**${recentScore.pp()}pp**`} ${(((recentScore.maxcombo < (recentScore.beatmap.max_combo - 3)) || (recentScore.countmiss > 0)) && ` (${recentScore.fcpp()}pp for ${recentScore.fc_accuracy}% FC)` || '')} • ${recentScore.accuracy}%\n` +
-                `• ${Util.addCommas(recentScore.score)} • x${recentScore.maxcombo}/${recentScore.beatmap.max_combo} • <${recentScore.count300}/${recentScore.count100}/${recentScore.count50}/${recentScore.countmiss}>\n` +
-                `${recentScore.completion < 100 && `• **Completion:** *${recentScore.completion}%*` || ''}`
-            )
-            .setFooter(`Score set ${Util.msToHumanReadable((Date.now() - new Date(recentScore.date)))} ago on the offical osu server.`)
+        interaction.followUp({
+            embeds: [
+                new Discord.MessageEmbed()
+                    .setColor(this.client.Settings.Colors.Main)
+                    .setAuthor(`${recentScore.beatmap.title} by ${recentScore.beatmap.creator}`, osuUser.avatar, recentScore.beatmap.link)
+                    .setThumbnail(recentScore.beatmap.cover_thumbnail)
+                    .setDescription(
+                        `${Emojis[recentScore.getDifficulty()]} __**${recentScore.beatmap.version}**__ ${recentScore.mods != '' ? `**${recentScore.mods}**` : ''} [${recentScore.starRating()}★]\n` +
+                        `• **${Emojis[recentScore.rank]}** • ${`**${recentScore.pp()}pp**`} ${(((recentScore.maxcombo < (recentScore.beatmap.max_combo - 3)) || (recentScore.countmiss > 0)) && ` (${recentScore.fcpp()}pp for ${recentScore.fc_accuracy}% FC)` || '')} • ${recentScore.accuracy}%\n` +
+                        `• ${Util.addCommas(recentScore.score)} • x${recentScore.maxcombo}/${recentScore.beatmap.max_combo} • <${recentScore.count300}/${recentScore.count100}/${recentScore.count50}/${recentScore.countmiss}>\n` +
+                        `${recentScore.completion < 100 && `• **Completion:** *${recentScore.completion}%*` || ''}`
+                    )
+                    .setFooter(`Score set ${Util.msToHumanReadable((Date.now() - new Date(recentScore.date)))} ago on the offical osu server.`)
+
+            ]
+        });
 
         this.client.guildHandler.Get(interaction.guild.id).mostRecentBeatmap = recentScore.beatmap.link;
-
-        return interaction.followUp({ embeds: [Embed] });
     }
 }
 

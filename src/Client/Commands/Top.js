@@ -42,7 +42,7 @@ class TopCommand extends Command {
         const user = this.client.userHandler.Get(target);
 
         if (!user) {
-            return interaction.reply({ content: 'Unable to find user, try again later.', ephemeral: true });
+            return interaction.reply({ content: 'Unable to find user, try again.', ephemeral: true });
         }
 
         const osuID = interaction.options.getString('name')
@@ -55,14 +55,16 @@ class TopCommand extends Command {
         const osuUser = await this.client.osu.getUser({ identifier: osuID, idetifierType: 'id' });
 
         if (!osuUser) {
-            return interaction.reply({ content: 'Unabled to find osu account. Try again later.', ephemeral: true });
+            return interaction.reply({ content: 'Unable to find user, try again later.', ephemeral: true });
         }
+
+        await interaction.deferReply();
 
         const scores = (await osuUser.getBestScores())
             .slice(0, 5); // Slice method returns first 5 entrys in best scores.
 
         if (!scores) {
-            return interaction.reply({ content: 'No scores found, try again later.' });
+            return interaction.followUp({ content: 'No scores found, try again later.' });
         }
 
         let Description = ''
@@ -74,13 +76,15 @@ class TopCommand extends Command {
                 `• ${Util.addCommas(score.score)} • x${score.maxcombo}/${score.beatmap.max_combo} • <${score.count300}/${score.count100}/${score.count50}/${score.countmiss}>`
         }
 
-        const Embed = new Discord.MessageEmbed()
-            .setColor(this.client.Settings.Colors.Main)
-            .setAuthor(`Best scores (${osuUser.username})`, osuUser.avatar, osuUser.profile_link)
-            .setThumbnail(osuUser.avatar)
-            .setDescription(Description)
-
-        return interaction.reply({ embeds: [Embed] });
+        interaction.followUp({
+            embeds: [
+                new Discord.MessageEmbed()
+                    .setColor(this.client.Settings.Colors.Main)
+                    .setAuthor(`Best scores (${osuUser.username})`, osuUser.avatar, osuUser.profile_link)
+                    .setThumbnail(osuUser.avatar)
+                    .setDescription(Description)
+            ]
+        });
     }
 }
 

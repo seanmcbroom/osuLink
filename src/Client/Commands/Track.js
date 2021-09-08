@@ -45,7 +45,7 @@ class TrackCommand extends Command {
             return interaction.reply({ content: `**${user.username}** is already being tracked.`, ephemeral: true });
         }
 
-        interaction.deferReply({ ephemeral: true });
+        await interaction.deferReply({ ephemeral: true });
 
         trackingWhitelist[user.id] = {
             top: trackingLimit
@@ -53,7 +53,9 @@ class TrackCommand extends Command {
 
         await guild.Datastore.setSetting('trackingWhitelist', trackingWhitelist);
 
-        return interaction.followUp({ content: `Now tracking **${interaction.options.getUser('user').username}**'s top ${trackingLimit}!` });
+        interaction.followUp({
+            content: `Now tracking **${interaction.options.getUser('user').username}**'s top ${trackingLimit}!`
+        });
     }
 }
 

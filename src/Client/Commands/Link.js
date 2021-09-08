@@ -27,13 +27,10 @@ class LinkCommand extends Command {
             return interaction.reply({ content: 'Unexpected error, try again later.', ephemeral: true });
         }
 
-        const username = interaction.options.getString('username');
-
-        if (!username) {
-            return interaction.reply({ content: 'Unexpected error, try again later.', ephemeral: true });
-        }
-
-        const osuUser = await this.client.osu.getUser({ identifier: username, identifierType: 'string' });
+        const osuUser = await this.client.osu.getUser({
+            identifier: interaction.options.getString('username'),
+            identifierType: 'string'
+        });
 
         if (!osuUser) {
             return interaction.reply({ content: 'Couldn\'t find user with that name.', ephemeral: true });
@@ -46,7 +43,6 @@ class LinkCommand extends Command {
         }
 
         const discordTag = await osuUser.getDiscordTag();
-        const isDiscordTagCorrect = (discordTag === interaction.user.tag);
 
         let helpEmbed = new Discord.MessageEmbed()
             .setColor(this.client.Settings.Colors.Main)
@@ -57,19 +53,19 @@ class LinkCommand extends Command {
                 embeds: [
                     helpEmbed.setDescription(
                         '**There was no discord tag found on your profile.**\n' +
-                        'To verify this account belongs to you, please add your tag **[here](https://osu.ppy.sh/home/account/edit)**.\n'
+                        'To verify this account belongs to you, please add your discord **[here](https://osu.ppy.sh/home/account/edit)**.\n'
                     )
                 ],
                 ephemeral: true
             });
         }
 
-        if (!isDiscordTagCorrect) {
+        if (discordTag !== interaction.user.tag) {
             return interaction.reply({
                 embeds: [
                     helpEmbed.setDescription(
                         '**Your discord tag is either outdated or incorrect.**\n' +
-                        'To verify this account belongs to you, please update your tag **[here](https://osu.ppy.sh/home/account/edit).**\n'
+                        'To verify this account belongs to you, please update your discord **[here](https://osu.ppy.sh/home/account/edit).**\n'
                     )
                 ],
                 ephemeral: true
@@ -78,7 +74,7 @@ class LinkCommand extends Command {
 
         await user.Datastore.setSetting('osuID', osuUser.user_id);
 
-        return interaction.reply(`Succesfully linked osu account **${osuUser.username}**!`)
+        interaction.reply({ content: `Succesfully linked osu account **${osuUser.username}**!` });
     }
 }
 

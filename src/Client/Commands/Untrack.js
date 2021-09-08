@@ -34,7 +34,7 @@ class UntrackCommand extends Command {
             return interaction.reply({ content: `**${user.username}** is not currently being tracked.`, ephemeral: true });
         }
 
-        interaction.deferReply({ ephemeral: true });
+        await interaction.deferReply({ ephemeral: true });
 
         trackingWhitelist = (trackingWhitelist.length > 1)
             ? trackingWhitelist.splice(user.id, 1)
@@ -42,7 +42,9 @@ class UntrackCommand extends Command {
 
         await guild.Datastore.setSetting('trackingWhitelist', trackingWhitelist);
 
-        return interaction.followUp({ content: `No longer tracking **${interaction.options.getUser('user').username}**.` });
+        interaction.followUp({
+            content: `No longer tracking **${interaction.options.getUser('user').username}**.`
+        });
     }
 }
 

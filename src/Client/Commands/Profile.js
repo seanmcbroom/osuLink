@@ -59,24 +59,26 @@ class ProfileCommand extends Command {
             return interaction.reply({ content: 'Unabled to find osu account. Try again later.', ephemeral: true });
         }
 
-        const Embed = new Discord.MessageEmbed()
-            .setColor(this.client.Settings.Colors.Main)
-            .setAuthor(`osu!Stats (${osuUser.username})`, osuUser.avatar, osuUser.profile_link)
-            .setThumbnail(osuUser.avatar)
-            .setDescription(
-                `• **Rank:** #${Util.addCommas(osuUser.pp_rank) || 'NaN'} (#${Util.addCommas(osuUser.pp_country_rank) || 'NaN'} :flag_${osuUser.country.toLowerCase()}:)\n` +
-                `• **Playtime:** ${Util.msToHumanReadable(parseInt(osuUser.total_seconds_played) * 1000)} (${Util.msToHours(parseInt(osuUser.total_seconds_played) * 1000)} hours)\n` +
-                `• **PP:** ${Util.addCommas(osuUser.pp_raw || 0)}pp • **Highest:** ${Util.addCommas(await osuUser.getHighestPP() || 0)}pp\n\n` +
+        interaction.reply({
+            embeds: [
+                new Discord.MessageEmbed()
+                    .setColor(this.client.Settings.Colors.Main)
+                    .setAuthor(`osu!Stats (${osuUser.username})`, osuUser.avatar, osuUser.profile_link)
+                    .setThumbnail(osuUser.avatar)
+                    .setDescription(
+                        `• **Rank:** #${Util.addCommas(osuUser.pp_rank) || 'NaN'} (#${Util.addCommas(osuUser.pp_country_rank) || 'NaN'} :flag_${osuUser.country.toLowerCase()}:)\n` +
+                        `• **Playtime:** ${Util.msToHumanReadable(parseInt(osuUser.total_seconds_played) * 1000)} (${Util.msToHours(parseInt(osuUser.total_seconds_played) * 1000)} hours)\n` +
+                        `• **PP:** ${Util.addCommas(osuUser.pp_raw || 0)}pp • **Highest:** ${Util.addCommas(await osuUser.getHighestPP() || 0)}pp\n\n` +
 
-                `• **Accuracy:** ${(Math.round(parseFloat(osuUser.accuracy) * 100) / 100) || 'NaN'}%\n` +
-                `• **Ranked Score:** ${Util.addCommas(osuUser.ranked_score) || 'NaN'}\n\n` +
+                        `• **Accuracy:** ${(Math.round(parseFloat(osuUser.accuracy) * 100) / 100) || 'NaN'}%\n` +
+                        `• **Ranked Score:** ${Util.addCommas(osuUser.ranked_score) || 'NaN'}\n\n` +
 
-                `${Emojis['XH']}: ${osuUser.count_rank_ssh || '0'} **|** ${Emojis['X']}: ${osuUser.count_rank_ss || '0'} **|** ${Emojis['SH']}: ${osuUser.count_rank_sh || '0'} **|** ${Emojis['S']}: ${osuUser.count_rank_s || '0'} **|** ${Emojis['A']}: ${osuUser.count_rank_a || '0'}`
-            )
-            .setFooter(`Account created on ${new Date(osuUser.join_date).toLocaleDateString('en-US')}`)
-            .setTimestamp()
-
-        return interaction.reply({ embeds: [Embed] })
+                        `${Emojis['XH']}: ${osuUser.count_rank_ssh || '0'} **|** ${Emojis['X']}: ${osuUser.count_rank_ss || '0'} **|** ${Emojis['SH']}: ${osuUser.count_rank_sh || '0'} **|** ${Emojis['S']}: ${osuUser.count_rank_s || '0'} **|** ${Emojis['A']}: ${osuUser.count_rank_a || '0'}`
+                    )
+                    .setFooter(`Account created on ${new Date(osuUser.join_date).toLocaleDateString('en-US')}`)
+                    .setTimestamp()
+            ]
+        })
     }
 }
 
