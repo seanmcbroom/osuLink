@@ -87,7 +87,7 @@ class Guild {
             id: this.id
         });
 
-        this.client.interactionHandler.loadInteractionsWithTagsOnGuild(this.id, ['premium', 'dev', 'management']);
+        this.client.interactionHandler.loadInteractionsWithTagsOnGuild(this.id, ['general', 'premium', 'dev', 'management']);
     }
 
     async updateMember(User) {
