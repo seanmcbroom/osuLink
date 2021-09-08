@@ -59,39 +59,40 @@ class RecentCommand extends Command {
             return interaction.reply({ content: 'Unable to find user, try again later.', ephemeral: true });
         }
 
-        const osuID = interaction.options.getString('name') || (await user.Datastore.getData('osuID'));
+        const osuIdentifier = interaction.options.getString('name')
+            || (await user.Datastore.getData('osuID'));
 
-        if (!osuID) {
+        if (!osuIdentifier) {
             return interaction.reply({ content: 'Target does not have a linked osu account.', ephemeral: true });
         }
 
-        const osuUser = await this.client.osu.getUser({ identifier: osuID, idetifierType: 'id' });
+        const osuUser = await this.client.osu.getUser({ identifier: osuIdentifier });
 
         if (!osuUser) {
-            return interaction.reply({ content: 'Unabled to find osu account. Try again later.', ephemeral: true });
+            return interaction.reply({ content: `Unable to find osu account, try again later.`, ephemeral: true });
         }
 
         await interaction.deferReply();
 
-        const recentPlay = await osuUser.getRecent({ filter: interaction.options.getString('filter') || 'recent' });
+        const recentScore = await osuUser.getRecent({ filter: interaction.options.getString('filter') || 'recent' });
 
-        if (!recentPlay) {
-            return interaction.reply({ content: 'No recent plays found.' });
+        if (!recentScore) {
+            return interaction.reply({ content: 'No recent scores. found.' });
         }
 
         const Embed = new Discord.MessageEmbed()
             .setColor(this.client.Settings.Colors.Main)
-            .setAuthor(`${recentPlay.beatmap.title} by ${recentPlay.beatmap.creator}`, osuUser.avatar, recentPlay.beatmap.link)
-            .setThumbnail(recentPlay.beatmap.cover_thumbnail)
+            .setAuthor(`${recentScore.beatmap.title} by ${recentScore.beatmap.creator}`, osuUser.avatar, recentScore.beatmap.link)
+            .setThumbnail(recentScore.beatmap.cover_thumbnail)
             .setDescription(
-                `${Emojis[recentPlay.getDifficulty()]} __**${recentPlay.beatmap.version}**__ ${recentPlay.mods != '' ? `**${recentPlay.mods}**` : ''} [${recentPlay.starRating()}★]\n` +
-                `• **${Emojis[recentPlay.rank]}** • ${`**${recentPlay.pp()}pp**`} ${(((recentPlay.maxcombo < (recentPlay.beatmap.max_combo - 3)) || (recentPlay.countmiss > 0)) && ` (${recentPlay.fcpp()}pp for ${recentPlay.fc_accuracy}% FC)` || '')} • ${recentPlay.accuracy}%\n` +
-                `• ${Util.addCommas(recentPlay.score)} • x${recentPlay.maxcombo}/${recentPlay.beatmap.max_combo} • <${recentPlay.count300}/${recentPlay.count100}/${recentPlay.count50}/${recentPlay.countmiss}>\n` +
-                `${recentPlay.completion < 100 && `• **Completion:** *${recentPlay.completion}%*` || ''}`
+                `${Emojis[recentScore.getDifficulty()]} __**${recentScore.beatmap.version}**__ ${recentScore.mods != '' ? `**${recentScore.mods}**` : ''} [${recentScore.starRating()}★]\n` +
+                `• **${Emojis[recentScore.rank]}** • ${`**${recentScore.pp()}pp**`} ${(((recentScore.maxcombo < (recentScore.beatmap.max_combo - 3)) || (recentScore.countmiss > 0)) && ` (${recentScore.fcpp()}pp for ${recentScore.fc_accuracy}% FC)` || '')} • ${recentScore.accuracy}%\n` +
+                `• ${Util.addCommas(recentScore.score)} • x${recentScore.maxcombo}/${recentScore.beatmap.max_combo} • <${recentScore.count300}/${recentScore.count100}/${recentScore.count50}/${recentScore.countmiss}>\n` +
+                `${recentScore.completion < 100 && `• **Completion:** *${recentScore.completion}%*` || ''}`
             )
-            .setFooter(`Score set ${Util.msToHumanReadable((Date.now() - new Date(recentPlay.date)))} ago on the offical osu server.`)
+            .setFooter(`Score set ${Util.msToHumanReadable((Date.now() - new Date(recentScore.date)))} ago on the offical osu server.`)
 
-        this.client.guildHandler.Get(interaction.guild.id).mostRecentBeatmap = recentPlay.beatmap.link;
+        this.client.guildHandler.Get(interaction.guild.id).mostRecentBeatmap = recentScore.beatmap.link;
 
         return interaction.followUp({ embeds: [Embed] });
     }
