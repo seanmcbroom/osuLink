@@ -1,5 +1,13 @@
 let Util = {};
 
+Util.addCommas = (number) => {
+    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+}
+
+Util.clamp = (number, min, max) => {
+    return Math.min(Math.max(number, min), max)
+}
+
 Util.msToHumanReadable = (ms) => {
     ms = ms / 1000
     const days = Math.floor(ms / (24 * 3600))
@@ -25,10 +33,6 @@ Util.formatTimeMinutesSeconds = (ms) => {
     const minutes = ((ms / 1000) % 3600) / 60
 
     return [minutes, (ms / 1000) % 60].map(format).join(':')
-}
-
-Util.addCommas = (number) => {
-    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 }
 
 module.exports = Util;
