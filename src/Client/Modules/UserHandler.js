@@ -108,6 +108,8 @@ class User {
                 const guilds = this.getGuilds();
 
                 const checkOsuScores = async () => {
+                    let foundNewScore = false;
+
                     const osuUser = await this.getOsuUser();
                     if (!osuUser) return;
 
@@ -115,13 +117,12 @@ class User {
                     const bestScores = await osuUser.getBestScores();
                     if (!bestScores) return;
 
-                    const bestScoresExist = trackingData.bestScores && Object.keys(trackingData.bestScores).length > 0
-                    let foundNewScore = false;
+                    const isInitilization = !(trackingData.bestScores && Object.keys(trackingData.bestScores).length > 0)
 
                     for (const score of bestScores) {
                         let found = false;
 
-                        if (bestScoresExist) {
+                        if (!isInitilization) {
                             for (const index in trackingData.bestScores) {
                                 if (trackingData.bestScores[index].S == score.score_id) {
                                     found = true;
@@ -133,25 +134,25 @@ class User {
                         if (!found) {
                             newScores.push(score);
                             foundNewScore = true;
-                        }
-                    }
 
-                    this.tracker.nextCheck *= (foundNewScore) ? 0.2 : 1.5;
+                            if (!isInitilization) { // Post new score to guilds
+                                const weighted = (p, i) => p * Math.pow(0.95, (i - 1));
 
-                    if (newScores.length > 0 && bestScoresExist) { // Post new scores to guilds
-                        for (const score of newScores) {
-                            const weighted = (p) => p * Math.pow(0.95, (score.profile_index - 1));
+                                const bestScoresClone = bestScores.slice(0);
+                                bestScoresClone.push(score.profile_index, score);
 
-                            let gain;
-                            if (trackingData.bestScores[score.profile_index - 1]) {
-                                const previousScorePerformance = trackingData.bestScores[score.profile_index - 1].P;
-                                gain = Math.round((weighted(score.profile_pp) - weighted(previousScorePerformance)) * 100) / 100;
-                            } else {
-                                gain = Math.round(weighted(score.profile_pp) * 100) / 100;
-                            }
+                                let total = 0;
+                                for (let i = 0; i < 100; i++) {
+                                    const s = bestScoresClone[i];
+                                    total += weighted(s.profile_pp, i);
+                                }
 
-                            for (const guild of guilds) {
-                                guild.postMemberOsuScore(this, score, gain);
+                                let gain = (total - trackingData.pp);
+                                trackingData.pp = total;
+
+                                for (const guild of guilds) {
+                                    guild.postMemberOsuScore(this, score, gain);
+                                }
                             }
                         }
                     }
@@ -172,6 +173,8 @@ class User {
 
                         this.Datastore.setSetting('tracking', trackingData);
                     }
+
+                    this.tracker.nextCheck *= (foundNewScore) ? 0.2 : 1.5;
                 }
 
                 for (const guild of guilds) {
