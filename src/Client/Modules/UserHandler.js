@@ -107,48 +107,76 @@ class User {
                 const trackingData = await this.Datastore.getData('tracking');
                 const guilds = this.getGuilds();
 
-                const checkOsuScores = async () => {
+                for (const guild of guilds) {
+                    guild.updateMember(this);
+                }
+
+                // osu Top Plays Tracking Update
+                await (async () => {
+                    const isInitilization = (trackingData && (!trackingData.bestScores || Object.keys(trackingData.bestScores).length === 0));
+
                     const osuUser = await this.getOsuUser();
                     if (!osuUser) return;
 
-                    let newScores = [];
                     const bestScores = await osuUser.getBestScores();
                     if (!bestScores) return;
 
-                    const bestScoresExist = trackingData.bestScores && Object.keys(trackingData.bestScores).length > 0
-                    let foundNewScore = false;
+                    bestScores.sort((a, b) => new Date(a.date) - new Date(b.date));
 
-                    for (const score of bestScores) {
-                        let found = false;
+                    function calculatePPWithScores(scores) { // Used for tracking pp gain of plays
+                        let total = 0;
 
-                        if (bestScoresExist) {
-                            for (const index in trackingData.bestScores) {
-                                if (trackingData.bestScores[index].S == score.score_id) {
-                                    found = true;
-                                    break;
-                                }
+                        const weighted = (p, i) => p * Math.pow(0.95, (i - 1));
+
+                        for (let i = 0; i < 100; i++) {
+                            const s = scores[i];
+                            if (s) {
+                                total += weighted(s.P, i + 1);
                             }
                         }
 
-                        if (!found) {
-                            newScores.push(score);
-                            foundNewScore = true;
-                        }
+                        return Math.round(total * 100) / 100;;
                     }
 
-                    this.tracker.nextCheck *= (foundNewScore) ? 0.2 : 1.5;
+                    let newScores = isInitilization
+                        ? bestScores
+                        : (function findChangesInScores() {
+                            let newScores = [];
 
-                    if (newScores.length > 0 && bestScoresExist) { // Post new scores to guilds
-                        for (const score of newScores) {
-                            const weighted = (p) => p * Math.pow(0.95, (score.profile_index - 1));
+                            for (const score of bestScores) {
+                                let found = false;
 
-                            let gain;
-                            if (trackingData.bestScores[score.profile_index - 1]) {
-                                const previousScorePerformance = trackingData.bestScores[score.profile_index - 1].P;
-                                gain = Math.round((weighted(score.profile_pp) - weighted(previousScorePerformance)) * 100) / 100;
-                            } else {
-                                gain = Math.round(weighted(score.profile_pp) * 100) / 100;
+                                for (const index in trackingData.bestScores) {
+                                    if (trackingData.bestScores[index].S == score.score_id) {
+                                        found = true;
+                                        break;
+                                    }
+                                }
+
+                                if (!found) {
+                                    newScores.push(score);
+                                }
                             }
+
+                            return newScores;
+                        })();
+
+                    // Post new score to guilds
+                    if (!isInitilization) {
+                        const bestScoresNew = trackingData.bestScores.slice();
+
+                        for (const score of newScores) {
+                            bestScoresNew.push({
+                                S: score.score_id,
+                                P: score.profile_pp
+                            });
+
+                            bestScoresNew.sort((a, b) => b.P - a.P);
+
+                            let total = calculatePPWithScores(bestScoresNew);
+                            let gain = Math.round((total - trackingData.pp) * 100) / 100;
+
+                            trackingData.pp = total;
 
                             for (const guild of guilds) {
                                 guild.postMemberOsuScore(this, score, gain);
@@ -156,33 +184,31 @@ class User {
                         }
                     }
 
-                    if (newScores.length > 0) { // Push new data to tracking
+                    // Post new data to datestorage
+                    if (newScores.length > 0) {
                         let compressedScores = {};
                         for (const index in bestScores) {
                             const score = bestScores[index];
 
-                            compressedScores[index] = {
+                            compressedScores[score.profile_index - 1] = {
                                 S: score.score_id,
                                 P: score.profile_pp
                             };
                         }
 
                         trackingData.bestScores = compressedScores;
-                        trackingData.pp = osuUser.pp_raw;
+                        trackingData.pp = calculatePPWithScores(compressedScores);
 
                         this.Datastore.setSetting('tracking', trackingData);
                     }
-                }
 
-                for (const guild of guilds) {
-                    guild.updateMember(this);
-                }
-
-                await checkOsuScores();
+                    this.tracker.nextCheck *= (!isInitilization && newScores.length > 0)
+                        ? 0.2
+                        : 1.5;
+                })();
 
                 if (this.tracker) {
                     this.tracker.nextCheck = Math.min(Math.max(this.tracker.nextCheck, 0.1), 2); // Clamp next check between 0.1 and 2
-
                     this.tracker.start();
                 }
             },
