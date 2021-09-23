@@ -7,7 +7,7 @@ class MapCommand extends Command {
     constructor() {
         super('map', {
             description: 'View the information of a map.',
-            tags: ['osu'],
+            tags: ['general'],
 
             ratelimit: 1,
             cooldown: 10000,
