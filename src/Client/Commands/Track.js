@@ -5,7 +5,7 @@ class TrackCommand extends Command {
     constructor() {
         super('track', {
             description: 'Track top scores.',
-            tags: ['general', 'management'],
+            tags: ['management'],
 
             ratelimit: 5,
             cooldown: 30000,
@@ -26,15 +26,15 @@ class TrackCommand extends Command {
     }
 
     async exec(interaction) {
-        const guild = this.client.guildHandler.Get(interaction.guild.id);
         const user = this.client.userHandler.Get(interaction.options.getUser('user'));
+        const guild = this.client.guildHandler.Get(interaction.guild.id);
 
         if (!user) {
             return interaction.reply({ content: `No user found, try again.`, ephemeral: true });
         }
 
-        const trackingLimit = Util.clamp(interaction.options.getString('top') || 50, 1, 100)
         const trackingChannel = await guild.Datastore.getData('trackingChannel');
+        const trackingLimit = Util.clamp(interaction.options.getString('top') || 50, 1, 100);
         let trackingWhitelist = await guild.Datastore.getData('trackingWhitelist');
 
         if (!trackingChannel) {

@@ -4,7 +4,7 @@ class UntrackCommand extends Command {
     constructor() {
         super('untrack', {
             description: 'Remove user from tracking.',
-            tags: ['general', 'management'],
+            tags: ['management'],
 
             ratelimit: 5,
             cooldown: 30000,
@@ -21,8 +21,8 @@ class UntrackCommand extends Command {
     }
 
     async exec(interaction) {
-        const guild = this.client.guildHandler.Get(interaction.guild.id);
         const user = this.client.userHandler.Get(interaction.options.getUser('user'));
+        const guild = this.client.guildHandler.Get(interaction.guild.id);
 
         if (!user) {
             return interaction.reply({ content: 'No user found, try again.', ephemeral: true });
@@ -36,9 +36,7 @@ class UntrackCommand extends Command {
 
         await interaction.deferReply({ ephemeral: true });
 
-        trackingWhitelist = (trackingWhitelist.length > 1)
-            ? trackingWhitelist.splice(user.id, 1)
-            : {};
+        delete trackingWhitelist[user.id];
 
         await guild.Datastore.setSetting('trackingWhitelist', trackingWhitelist);
 

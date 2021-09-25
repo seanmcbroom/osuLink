@@ -87,7 +87,7 @@ class Guild {
             id: this.id
         });
 
-        this.client.interactionHandler.loadInteractionsWithTagsOnGuild(this.id, ['general', 'premium', 'dev', 'management']);
+        this.client.interactionHandler.loadInteractionsWithTagsOnGuild(this.id, ['premium', 'dev', 'management']);
     }
 
     async updateMember(User) {
@@ -104,19 +104,22 @@ class Guild {
         if (!trackingWhitelist[User.id]) return
         if (trackingWhitelist[User.id].top < Score.profile_rank) return
 
-        const Embed = new Discord.MessageEmbed()
-            .setColor(this.client.Settings.Colors.Main)
-            .setAuthor(`${Score.beatmap.title} by ${Score.beatmap.creator}`, Score.player.avatar, Score.beatmap.link)
-            .setThumbnail(Score.beatmap.cover_thumbnail)
-            .setDescription(
-                `${Emojis[Score.getDifficulty()]} __**${Score.beatmap.version}**__ ${Score.mods != '' ? `**${Score.mods}**` : ''} [${Score.starRating()}★]\n` +
-                `• **${Emojis[Score.rank]}** • ${`**${Score.profile_pp}pp (+${Gain}pp)**`} • ${Score.accuracy}%\n` +
-                `• ${Util.addCommas(Score.score)} • x${Score.maxcombo}/${Score.beatmap.max_combo} • <${Score.count300}/${Score.count100}/${Score.count50}/${Score.countmiss}>\n` +
-                `${Score.completion < 100 && `• **Completion:** *${Score.completion}%*` || ''}`
-            )
-            .setFooter(`Score set ${Util.msToHumanReadable((Date.now() - new Date(Score.date)))} ago on the offical osu server.`)
-
-        channel.send({ content: `New **#${Score.profile_index}** for ${Score.player.username}!`, embeds: [Embed] });
+        channel.send({
+            content: `New **#${Score.profile_index}** for ${User.username}!`,
+            embeds: [
+                new Discord.MessageEmbed()
+                    .setColor(this.client.Settings.Colors.Main)
+                    .setAuthor(`${Score.beatmap.title} by ${Score.beatmap.creator}`, Score.player.avatar, Score.beatmap.link)
+                    .setThumbnail(Score.beatmap.cover_thumbnail)
+                    .setDescription(
+                        `${Emojis[Score.getDifficulty()]} __**${Score.beatmap.version}**__ ${Score.mods != '' ? `**${Score.mods}**` : ''} [${Score.starRating()}★]\n` +
+                        `• **${Emojis[Score.rank]}** • ${`**${Score.profile_pp}pp (+${Gain}pp)**`} • ${Score.accuracy}%\n` +
+                        `• ${Util.addCommas(Score.score)} • x${Score.maxcombo}/${Score.beatmap.max_combo} • <${Score.count300}/${Score.count100}/${Score.count50}/${Score.countmiss}>\n` +
+                        `${Score.completion < 100 && `• **Completion:** *${Score.completion}%*` || ''}`
+                    )
+                    .setFooter(`Score set ${Util.msToHumanReadable((Date.now() - new Date(Score.date)))} ago on the offical osu server.`)
+            ]
+        });
     }
 }
 
