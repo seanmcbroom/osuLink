@@ -35,4 +35,43 @@ Util.formatTimeMinutesSeconds = (ms) => {
     return [minutes, (ms / 1000) % 60].map(format).join(':')
 }
 
+Util.evalStringExpression = (string) => {
+    let comparisons = {
+        "==": function (a, b) { return (parseInt(a) == parseInt(b)) },
+        "!=": function (a, b) { return (parseInt(a) != parseInt(b)) },
+        ">=": function (a, b) { return (parseInt(a) >= parseInt(b)) },
+        ">": function (a, b) { return (parseInt(a) > parseInt(b)) },
+        "<=": function (a, b) { return (parseInt(a) <= parseInt(b)) },
+        "<": function (a, b) { return (parseInt(a) < parseInt(b)) },
+        "and": function (a, b) { return (evalExpression(a) && evalExpression(b)) },
+        "or": function (a, b) { return (evalExpression(a) || evalExpression(b)) },
+    }
+
+    function evalExpression(string) {
+        let Expression = string.split(" ")
+
+        let Comparison = Expression[Math.floor(Expression.length / 2)]
+        let a = string.substring(0, string.indexOf(Comparison) - 1)
+        let b = string.substring(string.indexOf(Comparison) + Comparison.length + 1)
+
+        if (comparisons[Comparison]) {
+            return comparisons[Comparison](a, b)
+        }
+    }
+
+    return evalExpression(string)
+}
+
+Util.find = (collection, callback) => {
+    var found = null;
+
+    collection.forEach(i => {
+        if (callback(i)) {
+            found = i;
+        }
+    });
+
+    return found;
+}
+
 module.exports = Util;
