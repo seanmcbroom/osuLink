@@ -105,10 +105,10 @@ class User {
         this.tracker = {
             check: async () => {
                 const trackingData = await this.Datastore.getData('tracking');
-                const guilds = this.getGuilds();
+                const members = this.getGuildMembers();
 
-                for (const guild of guilds) {
-                    guild.updateMember(this);
+                for (const member of members) {
+                    member.guild.updateMember(member);
                 }
 
                 // osu Top Plays Tracking Update
@@ -178,8 +178,8 @@ class User {
 
                             trackingData.pp = total;
 
-                            for (const guild of guilds) {
-                                guild.postMemberOsuScore(this, score, gain);
+                            for (const member of members) {
+                                member.guild.postMemberOsuScore(member, score, gain);
                             }
                         }
                     }
@@ -224,18 +224,20 @@ class User {
         this.tracker.start()
     }
 
-    getGuilds() {
-        let Guilds = [];
+    getGuildMembers() {
+        let Members = [];
 
         for (const guild of this.client.guilds._cache) {
-            if (guild[1].members._cache.get(this.id)) {
-                const Guild = this.client.guildHandler.Get(guild[1].id);
+            const member = guild[1].members._cache.get(this.id)
+            if (member) {
+                member.user = this;
+                member.guild = this.client.guildHandler.Get(guild[1].id);
 
-                Guilds.push(Guild);
+                Members.push(member);
             }
         }
 
-        return Guilds;
+        return Members;
     }
 
     async getOsuUser() {
