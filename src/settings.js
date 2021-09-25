@@ -15,15 +15,16 @@ module.exports = {
         User: {
             osuID: null,
             tracking: {
+                guilds: {},
                 bestScores: {},
                 pp: 0
             }
         },
 
         Guild: {
-            verifiedRole: null,
             trackingChannel: null,
-            trackingWhitelist: {}
+            trackingWhitelist: {},
+            Binds: {}
         }
     },
 
