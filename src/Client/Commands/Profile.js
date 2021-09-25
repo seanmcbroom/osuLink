@@ -8,9 +8,7 @@ class ProfileCommand extends Command {
     constructor() {
         super('profile', {
             description: 'View profile of player.',
-            aliases: ['stats'],
             tags: ['general'],
-
 
             ratelimit: 2,
             cooldown: 10000,
