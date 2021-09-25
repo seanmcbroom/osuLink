@@ -11,7 +11,7 @@ class BindsCommand extends Command {
             tags: ['management'],
 
             ratelimit: 2,
-            cooldown: 10000,
+            cooldown: 60000,
 
             userPermissions: 32n,
 
@@ -42,7 +42,7 @@ class BindsCommand extends Command {
             const embeds = [
                 new Discord.MessageEmbed()
                     .setColor(this.client.Settings.Colors.Main)
-                    .setAuthor(`osuLink Binds`, interaction.guild.iconURL())
+                    .setAuthor(`osuLink Binds (${guild.name})`, interaction.guild.iconURL())
                     .setDescription(Description)
             ];
 
@@ -66,7 +66,7 @@ class BindsCommand extends Command {
         }
 
         const filter = i => i.user.id === interaction.user.id;
-        const collector = interaction.channel.createMessageComponentCollector({ filter, time: 30000 });
+        const collector = interaction.channel.createMessageComponentCollector({ filter, time: 60000 });
 
         await interaction.reply({
             embeds: createBindsEmbeds(),
