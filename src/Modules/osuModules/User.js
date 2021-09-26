@@ -115,8 +115,6 @@ class User {
                     const play = new Score({ scoreData: score, beatmap: beatmap });
                     const pp = play.pp();
 
-                    console.log(pp);
-
                     if (pp < worstpp) {
                         worst = score;
                         worstpp = pp;
