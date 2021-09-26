@@ -37,9 +37,8 @@ class BindCommand extends Command {
 
         let binds = await guild.Datastore.getData('Binds');
         const bindId = Object.keys(binds).length + 1;
-        const maxBinds = 8;
 
-        if (bindId > maxBinds) {
+        if (bindId > guild.maxBinds) {
             return interaction.reply({ content: `This server has reached maximum binds. **(${bindId - 1}/${maxBinds})**`, ephemeral: true });
         }
 

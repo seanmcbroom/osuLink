@@ -81,6 +81,8 @@ class Guild {
 
         this.mostRecentBeatmap = null;
 
+        this.maxBinds = 10;
+
         this.Datastore = new Datastore('Guild', {
             Database: this.client.Database,
             DataFormat: DataFormat,
