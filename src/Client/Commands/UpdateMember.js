@@ -24,8 +24,15 @@ class UpdateMemberCommand extends Command {
     async exec(interaction) {
         const guild = this.client.guildHandler.Get(interaction.guild.id);
         const member = interaction.options.getUser('member');
+        const user = this.client.userHandler.Get(interaction.options.getUser('member'));
+
+        if (!user) {
+            return interaction.reply({ content: `Unable to update that member!`, ephemeral: true });
+        }
 
         await interaction.deferReply({ ephemeral: true });
+
+        member.user = user;
 
         await guild.updateMember(member);
 
