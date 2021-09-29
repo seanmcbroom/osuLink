@@ -1,7 +1,7 @@
 const isProduction = process.env.PRODUCTION === "TRUE";
 
 module.exports = {
-    Owners: [517529173061795840, 866759411267141682],
+    Owners: ['517529173061795840', '866759411267141682'],
 
     Links: {
         Invite: isProduction
