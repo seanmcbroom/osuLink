@@ -1,6 +1,6 @@
 const { AkairoClient, InteractionHandler, ListenerHandler } = require('discord-akairo');
-const { GuildHandler } = require('./Modules/GuildHandler');
-const { UserHandler } = require('./Modules/UserHandler');
+const GuildHandler = require('./Guilds/Handler');
+const UserHandler = require('./Users/Handler');
 
 const { osu } = require('../Modules/osu');
 const { Firebase } = require('./Modules/Datastore')
@@ -16,6 +16,8 @@ class Client extends AkairoClient {
     });
 
     this.Settings = Settings;
+
+    this.login(Settings.BotToken);
 
     this.interactionHandler = new InteractionHandler(this, {
       directory: './src/Client/Commands',
@@ -46,14 +48,18 @@ class Client extends AkairoClient {
     this.interactionHandler.loadAll();
     this.listenerHandler.loadAll();
 
-    this.once('ready', this.setup);
+    this.once('ready', () => {
+      this.setup();
+    });
   }
 
   async setup() {
-    console.log(`Online as ${this.user.tag}`);
+    this.userHandler.loadAll();
+
     this.user.setActivity('osu!', { type: 'PLAYING' });
+
+    console.log(`[${new Date(Date.now()).toUTCString()}] Logged into "${this.user.tag}"`);
   }
 }
 
-const client = new Client();
-client.login(Settings.BotToken);
+new Client();
