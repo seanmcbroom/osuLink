@@ -56,7 +56,7 @@ class ServerSettingsCommand extends Command {
     }
 
     async exec(interaction) {
-        const guild = this.client.guildHandler.Get(interaction.guild.id);
+        const guild = this.client.guildHandler.get(interaction.guild.id);
 
         const subcommand = interaction.options.getSubcommand();
         const setting = interaction.options.getString('setting');

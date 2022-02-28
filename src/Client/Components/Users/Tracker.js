@@ -1,4 +1,3 @@
-
 class Tracker {
     /**
      * Creates a new tracker object.

@@ -20,7 +20,7 @@ class BindsCommand extends Command {
     }
 
     async exec(interaction) {
-        const guild = this.client.guildHandler.Get(interaction.guild.id);
+        const guild = this.client.guildHandler.get(interaction.guild.id);
 
         let binds = await guild.Datastore.getData('Binds');
 

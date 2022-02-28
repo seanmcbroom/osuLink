@@ -21,7 +21,7 @@ class LinkCommand extends Command {
     }
 
     async exec(interaction) {
-        const user = this.client.userHandler.Get(interaction.user);
+        const user = this.client.userHandler.get(interaction.user);
 
         if (!user) {
             return interaction.reply({ content: 'Unexpected error, try again later.', ephemeral: true });

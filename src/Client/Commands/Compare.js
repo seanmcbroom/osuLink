@@ -32,7 +32,7 @@ class CompareCommand extends Command {
     async exec(interaction) {
         const getBeatmap = async () => {
             const link = interaction.options.getString('link')
-                || this.client.guildHandler.Get(interaction.guild.id).mostRecentBeatmap;
+                || this.client.guildHandler.get(interaction.guild.id).mostRecentBeatmap;
 
             if (!link) return null;
 
@@ -53,14 +53,17 @@ class CompareCommand extends Command {
         }
 
         const target = interaction.isContextMenu()
-            ? this.client.users.cache.get(interaction.targetId)
-            : (interaction.options.getUser('user') || interaction.user);
+            ? this.client.userHandler.get(interaction.targetId)
+            : this.client.userHandler.get(interaction.options.getUser('user')
+                ? interaction.options.getUser('user').id
+                : interaction.user.id
+            );
 
         if (!target) {
             return interaction.reply({ content: 'No target found, try again.', ephemeral: true });
         }
 
-        const user = this.client.userHandler.Get(target);
+        const user = this.client.userHandler.get(target);
 
         if (!user) {
             return interaction.reply({ content: 'Unable to find user, try again.', ephemeral: true });
@@ -102,7 +105,7 @@ class CompareCommand extends Command {
             ]
         });
 
-        this.client.guildHandler.Get(interaction.guild.id).mostRecentBeatmap = scores[0].beatmap.link;
+        this.client.guildHandler.get(interaction.guild.id).mostRecentBeatmap = scores[0].beatmap.link;
     }
 }
 

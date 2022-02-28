@@ -30,7 +30,7 @@ class BindCommand extends Command {
     }
 
     async exec(interaction) {
-        const guild = this.client.guildHandler.Get(interaction.guild.id);
+        const guild = this.client.guildHandler.get(interaction.guild.id);
 
         const role = interaction.options.getRole('role');
         const condition = interaction.options.getString('condition');

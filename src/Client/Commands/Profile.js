@@ -39,7 +39,7 @@ class ProfileCommand extends Command {
             return interaction.reply({ content: 'No target found, try again.', ephemeral: true });
         }
 
-        const user = this.client.userHandler.Get(target);
+        const user = this.client.userHandler.get(target);
 
         if (!user) {
             return interaction.reply({ content: 'Unable to find user, try again later.', ephemeral: true });

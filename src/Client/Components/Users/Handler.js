@@ -55,7 +55,9 @@ class UserHandler {
         const user = this.users.get(id);
         const discordUser = this.client.users.cache.get(id);
 
-        if (!user && !discordUser.bot) {
+        console.log(user, discordUser)
+
+        if (!user && (discordUser && !discordUser.bot)) {
             const user = new User(this, discordUser, {
                 DataFormat: this.DataFormat
             });
@@ -81,6 +83,7 @@ class UserHandler {
      * @returns {void}
      */
     get(id) {
+        console.log(id)
         return this.users.get(id) || this.add(id);
     }
 

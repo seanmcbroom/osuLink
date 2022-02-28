@@ -1,9 +1,9 @@
 const { AkairoClient, InteractionHandler, ListenerHandler } = require('discord-akairo');
-const GuildHandler = require('./Guilds/Handler');
-const UserHandler = require('./Users/Handler');
+const GuildHandler = require('./Components/Guilds/Handler');
+const UserHandler = require('./Components/Users/Handler');
 
-const { osu } = require('../Modules/osu');
-const { Firebase } = require('./Modules/Datastore')
+const { osu } = require('osu.js');
+const { Firebase } = require('./Components/Datastore')
 
 const Settings = require('../settings.js');
 

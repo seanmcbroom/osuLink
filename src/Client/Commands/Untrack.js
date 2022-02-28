@@ -21,8 +21,8 @@ class UntrackCommand extends Command {
     }
 
     async exec(interaction) {
-        const user = this.client.userHandler.Get(interaction.options.getUser('user'));
-        const guild = this.client.guildHandler.Get(interaction.guild.id);
+        const user = this.client.userHandler.get(interaction.options.getUser('user'));
+        const guild = this.client.guildHandler.get(interaction.guild.id);
 
         if (!user) {
             return interaction.reply({ content: 'No user found, try again.', ephemeral: true });

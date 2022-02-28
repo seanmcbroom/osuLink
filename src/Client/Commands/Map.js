@@ -27,7 +27,7 @@ class MapCommand extends Command {
     async exec(interaction) {
         const getBeatmap = async () => {
             const link = interaction.options.getString('link')
-                || this.client.guildHandler.Get(interaction.guild.id).mostRecentBeatmap;
+                || this.client.guildHandler.get(interaction.guild.id).mostRecentBeatmap;
 
             if (!link) return null;
 
@@ -64,7 +64,7 @@ class MapCommand extends Command {
             ]
         });
 
-        this.client.guildHandler.Get(interaction.guild.id).mostRecentBeatmap = beatmap.link;
+        this.client.guildHandler.get(interaction.guild.id).mostRecentBeatmap = beatmap.link;
     }
 }
 

@@ -1,4 +1,4 @@
-const { Datastore } = require('../Modules/Datastore');
+const { Datastore } = require('../Datastore');
 const Tracker = require('./Tracker');
 
 class User {
@@ -23,33 +23,13 @@ class User {
         this.track();
     }
 
-    track() {
-        if (!this.tracker) {
-            this.tracker = new Tracker(this, {
-                nextCheck: {
-                    default: 0,
-                    min: 0.2,
-                    max: 3
-                }
-            });
-        }
-
-        this.tracker.start();
-    }
-
-    untrack() {
-        if (this.tracker) {
-            this.tracker.stop();
-        }
-    }
-
     getGuildMembers() {
         let Members = [];
 
         for (const guild of this.handler.client.guilds._cache) {
             const member = guild[1].members._cache.get(this.id)
             if (member) {
-                member.guild = this.handler.client.guildHandler.Get(guild[1].id);
+                member.guild = this.handler.client.guildHandler.get(guild[1].id);
 
                 Members.push(member);
             }
@@ -74,6 +54,26 @@ class User {
             this.osuUser = osuUser;
 
             return osuUser;
+        }
+    }
+
+    track() {
+        if (!this.tracker) {
+            this.tracker = new Tracker(this, {
+                nextCheck: {
+                    default: 0,
+                    min: 0.2,
+                    max: 3
+                }
+            });
+        }
+
+        this.tracker.start();
+    }
+
+    untrack() {
+        if (this.tracker) {
+            this.tracker.stop();
         }
     }
 }

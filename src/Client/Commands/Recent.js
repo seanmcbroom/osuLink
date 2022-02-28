@@ -46,8 +46,11 @@ class RecentCommand extends Command {
 
     async exec(interaction) {
         const target = interaction.isContextMenu()
-            ? this.client.users.cache.get(interaction.targetId)
-            : (interaction.options.getUser('user') || interaction.user);
+            ? this.client.userHandler.get(interaction.targetId)
+            : this.client.userHandler.get(interaction.options.getUser('user')
+                ? interaction.options.getUser('user').id
+                : interaction.user.id
+            );
 
         if (!target) {
             return interaction.reply({ content: 'No target found, try again.', ephemeral: true });
@@ -97,7 +100,7 @@ class RecentCommand extends Command {
             ]
         });
 
-        this.client.guildHandler.Get(interaction.guild.id).mostRecentBeatmap = recentScore.beatmap.link;
+        this.client.guildHandler.get(interaction.guild.id).mostRecentBeatmap = recentScore.beatmap.link;
     }
 }
 

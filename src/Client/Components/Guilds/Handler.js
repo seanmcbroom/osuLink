@@ -20,20 +20,20 @@ class GuildHandler {
             this.loadAll()
 
             this.client.on('guildCreate', (guild) => {
-                this.Add(guild);
+                this.add(guild);
             });
 
             this.client.on('guildDelete', (guild) => {
-                this.Remove(guild);
+                this.remove(guild);
             });
 
             this.client.on('guildIntegrationsUpdate', (guild) => {
-                this.Reload(guild);
+                this.reload(guild);
             });
         });
     }
 
-    Add(guildData) {
+    add(guildData) {
         const guild = new Guild(this.client, guildData, {
             DataFormat: this.DataFormat
         });
@@ -43,23 +43,24 @@ class GuildHandler {
         return guild;
     }
 
-    Remove(guildId) {
+    remove(guildId) {
         return this._cache.delete(guildId);
     }
 
-    Reload(guildData) {
-        this.Remove(guildData.id);
-        return this.Add(guildData);
+    reload(guildData) {
+        this.remove(guildData.id);
+
+        return this.add(guildData);
     }
 
-    Get(guildId) {
+    get(guildId) {
         return this._cache.get(guildId);
     }
 
     loadAll() {
         for (const guild of this.client.guilds._cache) {
             const guildData = guild[1];
-            this.Add(guildData);
+            this.add(guildData);
         }
     }
 }
